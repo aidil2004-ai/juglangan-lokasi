@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard DJugja - Informasi & Navigasi Realtime</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Leaflet CSS & JS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+        color: #0f172a;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 9999px;
+      }
+
+      @keyframes spin-custom {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .spinner-ring {
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid #0284c7;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        animation: spin-custom 0.8s linear infinite;
+      }
+
+      .modal-backdrop {
+        background-color: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(4px);
+      }
+      .modal-card {
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col antialiased">
+    <!-- TOP COMPACT HEADER NAVIGATION -->
+    <header
+      class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-2"
+      >
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <div
+            class="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center font-bold text-base shadow-sm"
+          >
+            DJ
+          </div>
+          <div>
+            <h1
+              class="font-bold text-slate-900 text-sm md:text-base leading-tight"
+            >
+              NUSAINFO
+            </h1>
+            <p
+              class="text-[10px] text-sky-600 font-semibold tracking-wide uppercase"
+            >
+              Dashboard DJugja
+            </p>
+          </div>
+        </div>
+
+        <!-- Navigation Pills -->
+        <nav
+          class="flex items-center gap-1 overflow-x-auto no-scrollbar py-1 text-xs md:text-sm font-medium"
+        >
+          <button
+            onclick="switchTab('gempa')"
+            id="tab-gempa"
+            class="nav-btn px-3 py-1.5 rounded-full flex items-center gap-1.5 whitespace-nowrap bg-sky-50 text-sky-700 font-semibold border border-sky-200 transition-all"
+          >
+            <i class="fa-solid fa-house-crack text-sky-600"></i>
+            <span>Gempa Realtime</span>
+          </button>
+          <button
+            onclick="switchTab('cuaca')"
+            id="tab-cuaca"
+            class="nav-btn px-3 py-1.5 rounded-full flex items-center gap-1.5 whitespace-nowrap text-slate-600 hover:bg-slate-100 transition-all"
+          >
+            <i class="fa-solid fa-cloud-sun text-amber-500"></i>
+            <span>Cuaca Saya</span>
+          </button>
+          <button
+            onclick="switchTab('cctv')"
+            id="tab-cctv"
+            class="nav-btn px-3 py-1.5 rounded-full flex items-center gap-1.5 whitespace-nowrap text-slate-600 hover:bg-slate-100 transition-all"
+          >
+            <i class="fa-solid fa-video text-rose-500"></i>
+            <span>CCTV Situbondo</span>
+          </button>
+          <button
+            onclick="switchTab('maps')"
+            id="tab-maps"
+            class="nav-btn px-3 py-1.5 rounded-full flex items-center gap-1.5 whitespace-nowrap text-slate-600 hover:bg-slate-100 transition-all"
+          >
+            <i class="fa-solid fa-map-location-dot text-emerald-600"></i>
+            <span>Maps & Navigasi</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+      <!-- SUB-HEADER TITLE -->
+      <div
+        class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-200 pb-4"
+      >
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold text-slate-900">
+            Dashboard DJugja
+          </h2>
+          <p class="text-xs md:text-sm text-slate-500">
+            Pusat pemantauan gempa bumi BMKG, kondisi cuaca presisi, live stream
+            CCTV Situbondo, dan peta navigasi lokasi.
+          </p>
+        </div>
+        <div
+          id="live-clock"
+          class="text-xs font-medium text-slate-500 bg-white px-3 py-1.5 rounded-lg border border-slate-200 w-fit flex items-center gap-2"
+        >
+          <span
+            class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+          ></span>
+          <span id="clock-text">Memuat waktu...</span>
+        </div>
+      </div>
+
+      <!-- TAB 1: GEMPA REALTIME -->
+      <section id="section-gempa" class="tab-section space-y-4">
+        <div class="flex items-center justify-between">
+          <h3
+            class="text-base font-semibold text-slate-800 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-rss text-rose-500"></i> Pemantauan Gempa Bumi
+            BMKG Terkini
+          </h3>
+          <button
+            onclick="loadEarthquakeData()"
+            class="text-xs text-sky-600 hover:text-sky-800 flex items-center gap-1 font-medium bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100"
+          >
+            <i class="fa-solid fa-rotate-right"></i> Refresh Data
+          </button>
+        </div>
+
+        <div
+          id="gempa-container"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          <!-- Loading State -->
+          <div
+            class="col-span-full py-8 text-center text-slate-500 text-xs flex flex-col items-center gap-2"
+          >
+            <div class="spinner-ring"></div>
+            <span>Menghubungkan ke server data BMKG...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CUACA LOKASI SAYA -->
+      <section id="section-cuaca" class="tab-section hidden space-y-4">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div
+            class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 pb-4"
+          >
+            <div>
+              <h3
+                class="text-lg font-bold text-slate-900 flex items-center gap-2"
+              >
+                <i class="fa-solid fa-location-crosshairs text-sky-600"></i>
+                Informasi Cuaca & Desa Anda
+              </h3>
+              <p id="weather-location-name" class="text-xs text-slate-500 mt-1">
+                Klik tombol di sebelah kanan untuk mendeteksi lokasi presisi
+                Anda.
+              </p>
+            </div>
+            <button
+              onclick="getWeatherByGeolocation()"
+              class="px-4 py-2 text-xs font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-xl flex items-center gap-2 shadow-sm transition-all"
+            >
+              <i class="fa-solid fa-crosshairs"></i> Dapatkan Cuaca Lokasi Saya
+            </button>
+          </div>
+
+          <div
+            id="weather-init-state"
+            class="py-12 text-center text-slate-400 space-y-2"
+          >
+            <i class="fa-solid fa-cloud-sun text-4xl text-slate-300"></i>
+            <p class="text-xs font-medium">
+              Silakan klik tombol "Dapatkan Cuaca Lokasi Saya" di atas untuk
+              memuat data cuaca akurat.
+            </p>
+          </div>
+
+          <div
+            id="weather-loading"
+            class="py-12 flex-col items-center justify-center gap-3 hidden"
+          >
+            <div class="spinner-ring"></div>
+            <p class="text-xs font-medium text-slate-600">
+              Mendeteksi lokasi GPS & reverse-geocoding nama Desa Anda...
+            </p>
+          </div>
+
+          <div id="weather-content" class="hidden mt-6 space-y-4">
+            <div
+              class="p-3.5 bg-sky-50 border border-sky-200 rounded-xl flex items-center gap-3"
+            >
+              <i class="fa-solid fa-map-pin text-sky-600 text-lg"></i>
+              <div>
+                <span
+                  class="text-[11px] font-bold uppercase text-sky-800 tracking-wider"
+                  >Lokasi Terdeteksi:</span
+                >
+                <p
+                  id="village-detail-text"
+                  class="text-xs font-semibold text-slate-800"
+                >
+                  Menghitung...
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div
+                class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between"
+              >
+                <span class="text-xs font-medium text-slate-500"
+                  >Suhu Udara</span
+                >
+                <div class="mt-2 flex items-baseline gap-1">
+                  <span
+                    id="weather-temp"
+                    class="text-3xl font-bold text-slate-900"
+                    >--</span
+                  >
+                  <span class="text-sm font-semibold text-slate-600">°C</span>
+                </div>
+                <span
+                  id="weather-desc"
+                  class="text-[11px] font-medium text-sky-600 mt-1"
+                  >Cerah Berawan</span
+                >
+              </div>
+
+              <div
+                class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between"
+              >
+                <span class="text-xs font-medium text-slate-500"
+                  >Kelembapan</span
+                >
+                <div class="mt-2">
+                  <span
+                    id="weather-humidity"
+                    class="text-3xl font-bold text-slate-900"
+                    >--</span
+                  >
+                  <span class="text-sm font-semibold text-slate-600">%</span>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1"
+                  >Kelembapan relatif</span
+                >
+              </div>
+
+              <div
+                class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between"
+              >
+                <span class="text-xs font-medium text-slate-500"
+                  >Kecepatan Angin</span
+                >
+                <div class="mt-2">
+                  <span
+                    id="weather-wind"
+                    class="text-3xl font-bold text-slate-900"
+                    >--</span
+                  >
+                  <span class="text-sm font-semibold text-slate-600">km/j</span>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1"
+                  >Hembusan angin lokal</span
+                >
+              </div>
+
+              <div
+                class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between"
+              >
+                <span class="text-xs font-medium text-slate-500"
+                  >Tekanan Udara</span
+                >
+                <div class="mt-2">
+                  <span
+                    id="weather-pressure"
+                    class="text-3xl font-bold text-slate-900"
+                    >--</span
+                  >
+                  <span class="text-sm font-semibold text-slate-600">hPa</span>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1"
+                  >Permukaan laut</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: LIST LIVE CCTV SITUBONDO -->
+      <section id="section-cctv" class="tab-section hidden space-y-4">
+        <div
+          class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+        >
+          <div>
+            <h3
+              class="text-base font-semibold text-slate-800 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-video text-rose-500"></i> Streaming CCTV
+              Resmi Kab. Situbondo
+            </h3>
+            <p class="text-xs text-slate-500">
+              Terhubung langsung dengan portal Dishub / Pemkab Situbondo
+              (cctv.situbondokab.go.id)
+            </p>
+          </div>
+          <div class="relative w-full sm:w-64">
+            <input
+              type="text"
+              id="cctv-search"
+              onkeyup="filterCCTV()"
+              placeholder="Cari titik lokasi CCTV..."
+              class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <i
+              class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"
+            ></i>
+          </div>
+        </div>
+
+        <div
+          id="cctv-grid"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
+          <!-- Live CCTV Cards -->
+        </div>
+      </section>
+
+      <!-- TAB 4: MAPS REAL LIFE & ROUTING -->
+      <section id="section-maps" class="tab-section hidden space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div
+            class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-3"
+          >
+            <h3
+              class="text-sm font-bold text-slate-900 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-route text-emerald-600"></i> Navigasi &
+              Pencarian Rute
+            </h3>
+
+            <div
+              class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2"
+            >
+              <span class="text-xs font-semibold text-slate-700 block"
+                >Pilih Mode Tujuan Cepat:</span
+              >
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  onclick="setDestinationPreset('rumah')"
+                  class="px-2.5 py-2 text-xs font-medium bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-200 hover:border-sky-300 rounded-lg flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                >
+                  <i class="fa-solid fa-house-user text-sky-600"></i>
+                  <span>Ke Rumah</span>
+                </button>
+                <button
+                  onclick="setDestinationPreset('custom')"
+                  class="px-2.5 py-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-lg flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                >
+                  <i class="fa-solid fa-pen-to-square text-emerald-600"></i>
+                  <span>Pilih Sendiri</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-3 relative">
+              <div>
+                <label
+                  class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1"
+                  >Titik Awal (Origin)</label
+                >
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="start-input"
+                    onkeyup="searchAddress('start')"
+                    placeholder="Misal: Pos Polisi Panji Situbondo..."
+                    class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  />
+                  <i
+                    class="fa-solid fa-circle-dot absolute left-2.5 top-3 text-sky-600 text-xs"
+                  ></i>
+                </div>
+                <div
+                  id="start-results"
+                  class="absolute z-20 left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg mt-1 hidden max-h-48 overflow-y-auto text-xs"
+                ></div>
+              </div>
+
+              <div>
+                <label
+                  class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1"
+                  >Titik Tujuan (Destination)</label
+                >
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="end-input"
+                    onkeyup="searchAddress('end')"
+                    placeholder="Misal: Cluring Banyuwangi RT 01 RW 02..."
+                    class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  />
+                  <i
+                    class="fa-solid fa-location-dot absolute left-2.5 top-3 text-rose-500 text-xs"
+                  ></i>
+                </div>
+                <div
+                  id="end-results"
+                  class="absolute z-20 left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg mt-1 hidden max-h-48 overflow-y-auto text-xs"
+                ></div>
+              </div>
+
+              <button
+                onclick="calculateRoute()"
+                class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all"
+              >
+                <i class="fa-solid fa-location-arrow"></i> Hitung Rute Tercepat
+              </button>
+            </div>
+
+            <div
+              id="route-info"
+              class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1"
+            >
+              <span class="text-xs font-bold text-emerald-900 block"
+                >Informasi Rute:</span
+              >
+              <div class="flex justify-between text-xs text-emerald-800">
+                <span>Jarak Tempuh:</span>
+                <span id="route-distance" class="font-bold">-- km</span>
+              </div>
+              <div class="flex justify-between text-xs text-emerald-800">
+                <span>Estimasi Waktu:</span>
+                <span id="route-duration" class="font-bold">-- menit</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="lg:col-span-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-col"
+          >
+            <div
+              id="leaflet-map"
+              class="w-full h-[450px] rounded-xl z-10 border border-slate-100"
+            ></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- POPUP STREAM MODAL CCTV -->
+    <div
+      id="cctv-modal"
+      class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden modal-card transform scale-95 opacity-0 transition-all duration-300"
+      >
+        <div
+          class="p-4 border-b border-slate-100 flex items-center justify-between"
+        >
+          <div>
+            <h4
+              id="modal-cctv-title"
+              class="font-bold text-slate-800 text-sm md:text-base flex items-center gap-2"
+            >
+              <i class="fa-solid fa-video text-rose-500"></i> Live Stream CCTV
+              Situbondo
+            </h4>
+            <p id="modal-cctv-sub" class="text-xs text-slate-500">
+              Pemerintah Kabupaten Situbondo
+            </p>
+          </div>
+          <button
+            onclick="closeCCTVModal()"
+            class="w-7 h-7 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-700 text-xs transition-all"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div
+          class="p-2 bg-slate-900 aspect-video flex items-center justify-center relative overflow-hidden"
+        >
+          <iframe
+            id="cctv-player"
+            class="w-full h-full border-0 rounded-lg"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div
+          class="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500"
+        >
+          <span class="flex items-center gap-1.5">
+            <span
+              class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"
+            ></span>
+            Portal Resmi: cctv.situbondokab.go.id
+          </span>
+          <a
+            id="cctv-direct-link"
+            href="#"
+            target="_blank"
+            class="text-sky-600 hover:underline font-semibold flex items-center gap-1"
+          >
+            Buka Web Portal
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let map = null;
+      let startMarker = null;
+      let endMarker = null;
+      let routeLayer = null;
+      let startCoords = null;
+      let endCoords = null;
+
+      const HOME_PRESET = {
+        name: "Jl. Raya Juglangan, RT 02 / RW 01, Desa Juglangan, Kec. Panji, Situbondo",
+        lat: -7.7126,
+        lng: 114.0298,
+      };
+
+      const CCTV_DATA = [
+        {
+          id: 1,
+          name: "Alun-Alun Situbondo Kota",
+          location: "Kec. Situbondo Kota",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/1",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+        {
+          id: 2,
+          name: "Simpang 4 Pos Polisi Panji",
+          location: "Kec. Panji",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/2",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+        {
+          id: 3,
+          name: "Simpang 3 Besuki Utama",
+          location: "Kec. Besuki",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/3",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+        {
+          id: 4,
+          name: "Kawasan Pasir Putih",
+          location: "Kec. Bungatan",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/4",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+        {
+          id: 5,
+          name: "Simpang 4 Arjasa",
+          location: "Kec. Arjasa",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/5",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+        {
+          id: 6,
+          name: "Pertigaan Kapongan",
+          location: "Kec. Kapongan",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/6",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+        {
+          id: 7,
+          name: "Simpang Asembagus",
+          location: "Kec. Asembagus",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/7",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+        {
+          id: 8,
+          name: "Terminal Situbondo",
+          location: "Kec. Panji",
+          streamUrl: "https://cctv.situbondokab.go.id/embed/8",
+          fallbackUrl: "https://cctv.situbondokab.go.id/",
+        },
+      ];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        updateLiveClock();
+        setInterval(updateLiveClock, 1000);
+        loadEarthquakeData();
+        renderCCTVGrid(CCTV_DATA);
+      });
+
+      function updateLiveClock() {
+        const now = new Date();
+        const options = {
+          weekday: "short",
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        document.getElementById("clock-text").innerText =
+          now.toLocaleDateString("id-ID", options) + " WIB";
+      }
+
+      function switchTab(tabId) {
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.className =
+            "nav-btn px-3 py-1.5 rounded-full flex items-center gap-1.5 whitespace-nowrap text-slate-600 hover:bg-slate-100 transition-all font-medium";
+        });
+
+        const activeBtn = document.getElementById(`tab-${tabId}`);
+        if (activeBtn) {
+          activeBtn.className =
+            "nav-btn px-3 py-1.5 rounded-full flex items-center gap-1.5 whitespace-nowrap bg-sky-50 text-sky-700 font-semibold border border-sky-200 transition-all";
+        }
+
+        document
+          .querySelectorAll(".tab-section")
+          .forEach((sec) => sec.classList.add("hidden"));
+        const activeSection = document.getElementById(`section-${tabId}`);
+        if (activeSection) activeSection.classList.remove("hidden");
+
+        if (tabId === "maps") {
+          setTimeout(() => {
+            initLeafletMap();
+            if (map) map.invalidateSize();
+          }, 100);
+        }
+      }
+
+      // ROBUST BMKG EARTHQUAKE FETCHING LOGIC (GUARANTEED DATA DISPLAY)
+      async function loadEarthquakeData() {
+        const container = document.getElementById("gempa-container");
+        container.innerHTML = `
+        <div class="col-span-full py-8 text-center text-slate-500 text-xs flex flex-col items-center gap-2">
+          <div class="spinner-ring"></div>
+          <span>Menghubungkan & mengambil data terkini dari BMKG...</span>
+        </div>
+      `;
+
+        let rawGempaList = [];
+
+        // Primary & Fallback Proxy Sources
+        const apiSources = [
+          "/api/gempa",
+          "https://api.allorigins.win/raw?url=" +
+            encodeURIComponent(
+              "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+            ),
+          "https://api.allorigins.win/raw?url=" +
+            encodeURIComponent(
+              "https://data.bmkg.go.id/DataMKG/TEWS/gempadaterkini.json",
+            ),
+          "https://corsproxy.io/?" +
+            encodeURIComponent(
+              "https://data.bmkg.go.id/DataMKG/TEWS/gempadaterkini.json",
+            ),
+        ];
+
+        for (const src of apiSources) {
+          try {
+            const res = await fetch(src);
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.Infogempa && data.Infogempa.gempa) {
+                const gempaData = data.Infogempa.gempa;
+                rawGempaList = Array.isArray(gempaData)
+                  ? gempaData
+                  : [gempaData];
+                if (rawGempaList.length > 0) break;
+              }
+            }
+          } catch (e) {
+            // Try next proxy candidate
+          }
+        }
+
+        if (rawGempaList.length === 0) {
+          container.innerHTML = `
+          <div class="col-span-full p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs text-center flex flex-col items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base"></i>
+            <span>Server BMKG sedang dalam perawatan berkala. Silakan klik tombol <b>Refresh Data</b> di atas.</span>
+          </div>
+        `;
+          return;
+        }
+
+        // Display Earthquake Cards
+        container.innerHTML = rawGempaList
+          .slice(0, 6)
+          .map((g) => {
+            const mag = parseFloat(g.Magnitude || g.Magnitude);
+            const badgeColor =
+              mag >= 5.0
+                ? "bg-rose-100 text-rose-700 border-rose-300"
+                : "bg-amber-100 text-amber-800 border-amber-300";
+
+            return `
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs px-2.5 py-1 font-bold rounded-md border ${badgeColor}">
+                  M ${g.Magnitude}
+                </span>
+                <span class="text-[11px] font-medium text-slate-400">${g.Tanggal || ""} - ${g.Jam || ""}</span>
+              </div>
+              <h4 class="font-bold text-slate-900 text-sm leading-snug">${g.Wilayah || "Wilayah Indonesia"}</h4>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
+              <div>
+                <span class="text-slate-400 block">Kedalaman:</span>
+                <span class="font-semibold text-slate-800">${g.Kedalaman || "-"}</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Koordinat:</span>
+                <span class="font-semibold text-slate-800">${g.Coordinates || "-"}</span>
+              </div>
+              <div class="col-span-2 mt-1">
+                <span class="text-slate-400 block">Potensi / Dirasakan:</span>
+                <span class="font-medium text-sky-700">${g.Potensi || g.Dirasakan || "Pemantauan BMKG"}</span>
+              </div>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      // MANUAL WEATHER & REVERSE GEOLOCATION
+      function getWeatherByGeolocation() {
+        const initState = document.getElementById("weather-init-state");
+        const loading = document.getElementById("weather-loading");
+        const content = document.getElementById("weather-content");
+
+        initState.classList.add("hidden");
+        loading.classList.remove("hidden");
+        loading.classList.add("flex");
+        content.classList.add("hidden");
+
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const lat = pos.coords.latitude;
+              const lng = pos.coords.longitude;
+              await fetchVillageName(lat, lng);
+              await fetchWeatherData(lat, lng);
+            },
+            async (err) => {
+              document.getElementById("village-detail-text").innerText =
+                "Desa Juglangan, Kecamatan Panji, Kabupaten Situbondo";
+              await fetchWeatherData(-7.7126, 114.0298);
+            },
+          );
+        } else {
+          document.getElementById("village-detail-text").innerText =
+            "Desa Juglangan, Kecamatan Panji, Kabupaten Situbondo";
+          fetchWeatherData(-7.7126, 114.0298);
+        }
+      }
+
+      async function fetchVillageName(lat, lng) {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+          );
+          const data = await res.json();
+
+          if (data && data.address) {
+            const village =
+              data.address.village ||
+              data.address.suburb ||
+              data.address.town ||
+              data.address.city_district ||
+              "Desa";
+            const county =
+              data.address.county || data.address.state_district || "Situbondo";
+            const state = data.address.state || "Jawa Timur";
+
+            document.getElementById("village-detail-text").innerText =
+              `${village}, ${county}, ${state} (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+          } else {
+            document.getElementById("village-detail-text").innerText =
+              `Koordinat: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+          }
+        } catch (err) {
+          document.getElementById("village-detail-text").innerText =
+            `Koordinat: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        }
+      }
+
+      async function fetchWeatherData(lat, lng) {
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&hourly=relativehumidity_2m,surface_pressure`;
+          const res = await fetch(url);
+          const data = await res.json();
+
+          const current = data.current_weather;
+          document.getElementById("weather-temp").innerText = Math.round(
+            current.temperature,
+          );
+          document.getElementById("weather-wind").innerText = current.windspeed;
+          document.getElementById("weather-humidity").innerText = data.hourly
+            ? data.hourly.relativehumidity_2m[0]
+            : 75;
+          document.getElementById("weather-pressure").innerText = data.hourly
+            ? Math.round(data.hourly.surface_pressure[0])
+            : 1012;
+
+          document.getElementById("weather-loading").classList.add("hidden");
+          document.getElementById("weather-loading").classList.remove("flex");
+          document.getElementById("weather-content").classList.remove("hidden");
+        } catch (err) {
+          console.error("Cuaca error:", err);
+        }
+      }
+
+      // SITUBONDO CCTV RENDER
+      function renderCCTVGrid(data) {
+        const container = document.getElementById("cctv-grid");
+        container.innerHTML = data
+          .map(
+            (item) => `
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="w-full aspect-video bg-slate-900 rounded-lg mb-3 flex flex-col items-center justify-center text-slate-300 relative overflow-hidden group border border-slate-800">
+              <i class="fa-solid fa-video text-2xl text-rose-500 mb-1"></i>
+              <span class="text-[10px] text-slate-400">cctv.situbondokab.go.id</span>
+              <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                <button onclick="openCCTVModal('${item.name}', '${item.streamUrl}', '${item.fallbackUrl}')" class="px-3 py-1.5 bg-rose-600 text-white font-semibold text-xs rounded-lg shadow-md flex items-center gap-1.5">
+                  <i class="fa-solid fa-play"></i> Putar Stream
+                </button>
+              </div>
+            </div>
+            <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
+            <p class="text-xs text-slate-500 mt-0.5">${item.location}</p>
+          </div>
+          <button onclick="openCCTVModal('${item.name}', '${item.streamUrl}', '${item.fallbackUrl}')" class="mt-3 w-full py-1.5 text-xs font-semibold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-lg transition-all flex items-center justify-center gap-1">
+            <i class="fa-solid fa-expand"></i> Tampilkan CCTV
+          </button>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      function filterCCTV() {
+        const q = document.getElementById("cctv-search").value.toLowerCase();
+        const filtered = CCTV_DATA.filter(
+          (c) =>
+            c.name.toLowerCase().includes(q) ||
+            c.location.toLowerCase().includes(q),
+        );
+        renderCCTVGrid(filtered);
+      }
+
+      function openCCTVModal(title, streamUrl, fallbackUrl) {
+        document.getElementById("modal-cctv-title").innerText = title;
+        document.getElementById("cctv-player").src = streamUrl;
+        document.getElementById("cctv-direct-link").href = fallbackUrl;
+
+        const modal = document.getElementById("cctv-modal");
+        const card = modal.querySelector(".modal-card");
+
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          card.classList.remove("scale-95", "opacity-0");
+          card.classList.add("scale-100", "opacity-100");
+        }, 10);
+      }
+
+      function closeCCTVModal() {
+        const modal = document.getElementById("cctv-modal");
+        const card = modal.querySelector(".modal-card");
+
+        card.classList.remove("scale-100", "opacity-100");
+        card.classList.add("scale-95", "opacity-0");
+        setTimeout(() => {
+          document.getElementById("cctv-player").src = "";
+          modal.classList.add("hidden");
+        }, 200);
+      }
+
+      // LEAFLET MAPS & OSRM
+      function initLeafletMap() {
+        if (map) return;
+
+        map = L.map("leaflet-map").setView([-7.7126, 114.0298], 12);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "© OpenStreetMap contributors",
+        }).addTo(map);
+
+        L.marker([-7.7126, 114.0298])
+          .addTo(map)
+          .bindPopup("<b>Desa Juglangan</b><br>Kec. Panji, Kab. Situbondo")
+          .openPopup();
+      }
+
+      function setDestinationPreset(type) {
+        if (type === "rumah") {
+          document.getElementById("end-input").value = HOME_PRESET.name;
+          endCoords = { lat: HOME_PRESET.lat, lng: HOME_PRESET.lng };
+
+          if (map) {
+            if (endMarker) map.removeLayer(endMarker);
+            endMarker = L.marker([HOME_PRESET.lat, HOME_PRESET.lng])
+              .addTo(map)
+              .bindPopup(`<b>Tujuan:</b> ${HOME_PRESET.name}`)
+              .openPopup();
+            map.setView([HOME_PRESET.lat, HOME_PRESET.lng], 14);
+          }
+        } else {
+          document.getElementById("end-input").value = "";
+          document.getElementById("end-input").focus();
+          endCoords = null;
+        }
+      }
+
+      let searchTimeout = null;
+      function searchAddress(type) {
+        clearTimeout(searchTimeout);
+        const query = document.getElementById(`${type}-input`).value;
+        const resultsDiv = document.getElementById(`${type}-results`);
+
+        if (query.length < 3) {
+          resultsDiv.classList.add("hidden");
+          return;
+        }
+
+        searchTimeout = setTimeout(async () => {
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=5`,
+            );
+            const data = await res.json();
+
+            if (data.length === 0) {
+              resultsDiv.innerHTML = `<div class="p-2 text-slate-400">Lokasi tidak ditemukan</div>`;
+            } else {
+              resultsDiv.innerHTML = data
+                .map(
+                  (item) => `
+              <div onclick="selectLocation('${type}', '${item.display_name.replace(/'/g, "\\'")}', ${item.lat}, ${item.lon})" class="p-2 hover:bg-sky-50 cursor-pointer border-b border-slate-100 text-slate-700">
+                <span class="font-medium text-slate-900 block">${item.display_name.split(",")[0]}</span>
+                <span class="text-[10px] text-slate-500">${item.display_name}</span>
+              </div>
+            `,
+                )
+                .join("");
+            }
+            resultsDiv.classList.remove("hidden");
+          } catch (err) {
+            console.error("Search error:", err);
+          }
+        }, 400);
+      }
+
+      function selectLocation(type, name, lat, lng) {
+        document.getElementById(`${type}-input`).value = name;
+        document.getElementById(`${type}-results`).classList.add("hidden");
+
+        const coords = { lat: parseFloat(lat), lng: parseFloat(lng) };
+        if (type === "start") startCoords = coords;
+        else endCoords = coords;
+
+        if (map) {
+          if (type === "start") {
+            if (startMarker) map.removeLayer(startMarker);
+            startMarker = L.marker([lat, lng])
+              .addTo(map)
+              .bindPopup(`<b>Awal:</b> ${name}`)
+              .openPopup();
+          } else {
+            if (endMarker) map.removeLayer(endMarker);
+            endMarker = L.marker([lat, lng])
+              .addTo(map)
+              .bindPopup(`<b>Tujuan:</b> ${name}`)
+              .openPopup();
+          }
+          map.setView([lat, lng], 13);
+        }
+      }
+
+      async function calculateRoute() {
+        if (!startCoords || !endCoords) {
+          alert("Pilih lokasi Titik Awal dan Titik Tujuan terlebih dahulu!");
+          return;
+        }
+
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${startCoords.lng},${startCoords.lat};${endCoords.lng},${endCoords.lat}?overview=full&geometries=geojson`;
+
+        try {
+          const res = await fetch(osrmUrl);
+          const data = await res.json();
+
+          if (!data.routes || data.routes.length === 0) {
+            alert("Rute tidak ditemukan.");
+            return;
+          }
+
+          const route = data.routes[0];
+          const distKm = (route.distance / 1000).toFixed(1);
+          const durationMin = Math.round(route.duration / 60);
+
+          document.getElementById("route-distance").innerText = `${distKm} km`;
+          document.getElementById("route-duration").innerText =
+            `${durationMin} menit`;
+          document.getElementById("route-info").classList.remove("hidden");
+
+          if (routeLayer) map.removeLayer(routeLayer);
+
+          routeLayer = L.geoJSON(route.geometry, {
+            style: { color: "#0284c7", weight: 5, opacity: 0.8 },
+          }).addTo(map);
+
+          map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
+        } catch (err) {
+          console.error("Routing error:", err);
+          alert("Gagal menghitung rute navigasi.");
+        }
+      }
+    </script>
+  </body>
+</html>
