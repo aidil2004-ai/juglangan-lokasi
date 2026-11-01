@@ -261,7 +261,6 @@
                   Terpadu
                 </span>
               </div>
-          
             </div>
           </div>
 
@@ -690,9 +689,10 @@
 
           <button
             onclick="loadEarthquakeData()"
-            class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs rounded-lg border border-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto"
+            id="btn-refresh-gempa"
+            class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs rounded-lg border border-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
           >
-            <i class="fa-solid fa-arrows-rotate"></i>
+            <i id="icon-refresh-gempa" class="fa-solid fa-arrows-rotate"></i>
             <span>Refresh</span>
           </button>
         </div>
@@ -1149,6 +1149,7 @@
         locationName: "Mendeteksi Lokasi GPS...",
         locationDetail: "Mencari lokasi presisi Anda...",
         quakeDataLoaded: false,
+        isQuakeLoading: false,
         map: null,
         originMarker: null,
         destMarker: null,
@@ -1551,9 +1552,18 @@
         return "Ekstrem";
       }
 
+      /* RENDER & REFRESH DATA GEMPA (BISA DIPENCET BERKALI-KALI) */
       async function loadEarthquakeData() {
+        if (state.isQuakeLoading) return; // Cegah spam bersamaan dalam 1 milidetik
+        state.isQuakeLoading = true;
+
         const loading = document.getElementById("quake-loading");
         const content = document.getElementById("quake-content");
+        const refreshIcon = document.getElementById("icon-refresh-gempa");
+        const refreshBtn = document.getElementById("btn-refresh-gempa");
+
+        // Putar ikon animasi
+        if (refreshIcon) refreshIcon.classList.add("animate-spin");
 
         if (!state.quakeDataLoaded) {
           loading.style.display = "flex";
@@ -1561,8 +1571,9 @@
         }
 
         try {
+          const timestamp = new Date().getTime(); // Anti-cache browser
           const resAuto = await fetch(
-            "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+            `https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json?t=${timestamp}`,
           );
           if (!resAuto.ok) throw new Error();
           const dataAuto = await resAuto.json();
@@ -1572,7 +1583,7 @@
           renderLatestQuake(quake);
 
           const resHistory = await fetch(
-            "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json",
+            `https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json?t=${timestamp}`,
           );
           if (resHistory.ok) {
             const dataHistory = await resHistory.json();
@@ -1582,9 +1593,19 @@
           loading.style.display = "none";
           content.classList.remove("hidden");
           state.quakeDataLoaded = true;
+
+          showToast("Data gempa BMKG berhasil diperbarui!", "info");
         } catch (err) {
           console.error(err);
           loading.style.display = "none";
+          showToast("Gagal memperbarui data gempa. Periksa jaringan.", "error");
+        } finally {
+          // Berikan jeda sebentar (500ms) agar efek animasi perputaran terlihat jelas, lalu buka kembali tombolnya
+          setTimeout(() => {
+            if (refreshIcon) refreshIcon.classList.remove("animate-spin");
+            if (refreshBtn) refreshBtn.disabled = false;
+            state.isQuakeLoading = false;
+          }, 500);
         }
       }
 
@@ -1976,7 +1997,6 @@
         btn.disabled = true;
 
         try {
-          // Hanya geocode jika objek koordinat belum tersedia (mencegah double request)
           if (!state.selectedOrigin || !state.selectedOrigin.lat) {
             state.selectedOrigin = await geocodeText(originVal);
           }
