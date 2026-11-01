@@ -3,8 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portal Informasi DJugja</title>
-    <link rel="icon" type="image/png" href="logo.png" />
+
+    <!-- ===== SEO META DENGAN POIN-POIN MENARIK UNTUK GOOGLE ===== -->
+    <title>
+      Portal Informasi DJugja - Informasi Terpadu Situbondo & Real-Time
+    </title>
+    <meta
+      name="description"
+      content="Portal Informasi Terpadu Situbondo. Fitur Utama: ☀️ Cuaca Presisi &amp; Ramalan 5 Hari | 🌋 Info Gempa BMKG Realtime &amp; Peringatan Getar | 📹 Live CCTV Situbondo | 🗺️ Navigasi Maps Satelit."
+    />
+    <meta
+      name="keywords"
+      content="Portal DJugja, Cuaca Situbondo, Info Gempa BMKG, CCTV Situbondo, Maps Situbondo, Juglangan"
+    />
+    <meta name="author" content="Aidil Ramadani" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- ===== LOGO WEBSITES UNTUK GOOGLE SEARCH (FAVICON) ===== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="logo.png" />
+    <link rel="shortcut icon" href="logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="logo.png" />
+
+    <!-- ===== META OPEN GRAPH (TAMPILAN SAAT SEBAR LINK WA/FB) ===== -->
+    <meta
+      property="og:title"
+      content="Portal Informasi DJugja - Terpadu & Realtime"
+    />
+    <meta
+      property="og:description"
+      content="Layanan informasi terpadu: Cuaca Presisi GPS, Info Gempa TEWS BMKG, Live Stream CCTV Situbondo, & Navigasi Satelit."
+    />
+    <meta property="og:image" content="logo.png" />
+    <meta property="og:url" content="https://juglangan-lokasi.vercel.app" />
+    <meta property="og:type" content="website" />
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
@@ -102,6 +135,7 @@
       .leaflet-container {
         background-color: #090d16 !important;
         font-family: "Inter", sans-serif !important;
+        z-index: 10 !important;
       }
       .leaflet-popup-content-wrapper,
       .leaflet-popup-tip {
@@ -115,6 +149,12 @@
         margin: 12px 16px !important;
         font-size: 13px !important;
       }
+
+      /* Fix Dropdown Suggestions Layer & Touch Scroll */
+      .suggestion-box {
+        z-index: 9999 !important;
+        -webkit-overflow-scrolling: touch;
+      }
     </style>
   </head>
   <body
@@ -126,7 +166,7 @@
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden transition-all duration-300"
     >
       <div
-        class="bg-slate-900 border-2 border-rose-500/80 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl shadow-rose-950/50 space-y-4 animate-bounce-once text-center"
+        class="bg-slate-900 border-2 border-rose-500/80 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl shadow-rose-950/50 space-y-4 text-center"
       >
         <div
           class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-full flex items-center justify-center mx-auto border border-rose-500/40 animate-pulse text-3xl"
@@ -187,7 +227,7 @@
           class="w-full py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2"
         >
           <i class="fa-solid fa-bell-slash"></i>
-          <span>Matikan Peringatan & Hentikan Getaran</span>
+          <span>Matikan Peringatan &amp; Hentikan Getaran</span>
         </button>
       </div>
     </div>
@@ -215,7 +255,13 @@
                 >
                   PORTAL INFORMASI
                 </span>
+                <span
+                  class="text-[9px] font-semibold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/30 px-1.5 py-0.5 rounded-full hidden xs:inline-block"
+                >
+                  Terpadu
+                </span>
               </div>
+          
             </div>
           </div>
 
@@ -260,7 +306,7 @@
             </button>
           </nav>
 
-          <!-- Status Clock Widget (Tampil di HP & Laptop) -->
+          <!-- Status Clock Widget -->
           <div
             class="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-300 bg-slate-900/70 px-2.5 py-1 rounded-lg border border-slate-800 shrink-0 font-mono shadow-sm"
           >
@@ -335,7 +381,7 @@
               </span>
             </div>
             <h1 class="text-lg font-bold text-white mt-1">
-              Cuaca Presisi & Ramalan 5 Hari
+              Cuaca Presisi &amp; Ramalan 5 Hari
             </h1>
           </div>
 
@@ -592,7 +638,7 @@
                 Ideal
               </div>
               <div class="text-[10px] text-slate-500 mt-0.5">
-                Indeks suhu & lembap
+                Indeks suhu &amp; lembap
               </div>
             </div>
           </div>
@@ -635,7 +681,7 @@
               </span>
             </div>
             <h1 class="text-lg font-bold text-white mt-1">
-              Gempabumi & Potensi Tsunami
+              Gempabumi &amp; Potensi Tsunami
             </h1>
             <p class="text-xs text-slate-400 mt-0.5">
               Data gempabumi terkini di Indonesia secara resmi BMKG.
@@ -798,7 +844,7 @@
           </div>
         </div>
 
-        <!-- EARTHQUAKE HISTORY TABLE -->
+        <!-- EARTHQUAKE HISTORY TABLE (Rapi untuk Mobile & Desktop) -->
         <div class="glass-card rounded-xl p-4">
           <div
             class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 border-b border-slate-800 pb-3"
@@ -827,12 +873,14 @@
                 <tr
                   class="bg-slate-900/90 text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-800"
                 >
-                  <th class="p-2.5 rounded-l-lg">Waktu</th>
-                  <th class="p-2.5">Magnitudo</th>
-                  <th class="p-2.5">Kedalaman</th>
-                  <th class="p-2.5">Lokasi</th>
-                  <th class="p-2.5">Dirasakan (MMI)</th>
-                  <th class="p-2.5 rounded-r-lg">Potensi Tsunami</th>
+                  <th class="p-2.5 rounded-l-lg min-w-[90px]">Waktu</th>
+                  <th class="p-2.5 min-w-[70px]">Magnitudo</th>
+                  <th class="p-2.5 min-w-[70px]">Kedalaman</th>
+                  <th class="p-2.5 min-w-[160px]">Lokasi</th>
+                  <th class="p-2.5 min-w-[110px]">Dirasakan (MMI)</th>
+                  <th class="p-2.5 rounded-r-lg min-w-[100px]">
+                    Potensi Tsunami
+                  </th>
                 </tr>
               </thead>
               <tbody
@@ -873,7 +921,7 @@
           <h1
             class="text-xl sm:text-2xl font-extrabold text-white tracking-tight"
           >
-            Portal CCTV Live Lalu Lintas & Publik
+            Portal CCTV Live Lalu Lintas &amp; Publik
           </h1>
 
           <p
@@ -899,7 +947,9 @@
 
       <!-- MENU 4: MAPS & RUTE SATELIT -->
       <section id="section-maps" class="tab-content hidden space-y-4">
-        <div class="glass-card rounded-xl p-4 border-l-4 border-l-emerald-500">
+        <div
+          class="glass-card rounded-xl p-4 border-l-4 border-l-emerald-500 relative"
+        >
           <div
             class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-4"
           >
@@ -926,7 +976,7 @@
           </div>
 
           <!-- Inputs Form Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 relative">
             <div class="md:col-span-5 relative">
               <label class="block text-xs font-semibold text-slate-300 mb-1">
                 Titik Awal (Asal):
@@ -951,7 +1001,7 @@
 
               <div
                 id="origin-suggestions"
-                class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/95 border border-slate-700 rounded-lg shadow-xl overflow-hidden hidden max-h-48 overflow-y-auto"
+                class="suggestion-box absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl hidden max-h-52 overflow-y-auto"
               ></div>
             </div>
 
@@ -979,7 +1029,7 @@
 
               <div
                 id="dest-suggestions"
-                class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/95 border border-slate-700 rounded-lg shadow-xl overflow-hidden hidden max-h-48 overflow-y-auto"
+                class="suggestion-box absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl hidden max-h-52 overflow-y-auto"
               ></div>
             </div>
 
@@ -999,7 +1049,7 @@
         <!-- Route Details Summary Box -->
         <div
           id="route-summary-card"
-          class="glass-card rounded-xl p-3 bg-slate-900/90 border border-emerald-500/30 hidden"
+          class="glass-card rounded-xl p-3 bg-slate-900/90 border border-emerald-500/30 hidden relative z-0"
         >
           <div
             class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
@@ -1046,11 +1096,11 @@
 
         <!-- Leaflet Map Container -->
         <div
-          class="glass-card rounded-xl p-1.5 bg-slate-900 overflow-hidden shadow-xl relative"
+          class="glass-card rounded-xl p-1.5 bg-slate-900 overflow-hidden shadow-xl relative z-0"
         >
           <div
             id="map-container"
-            class="w-full h-[380px] sm:h-[450px] rounded-lg z-10"
+            class="w-full h-[380px] sm:h-[450px] rounded-lg"
           ></div>
         </div>
       </section>
@@ -1183,7 +1233,6 @@
         getUserLocation();
         loadEarthquakeData();
 
-        // Polling Data Gempa Otomatis setiap 20 detik
         setInterval(loadEarthquakeData, 20000);
 
         document.getElementById("footer-year").textContent =
@@ -1519,9 +1568,7 @@
           const dataAuto = await resAuto.json();
           const quake = dataAuto.Infogempa.gempa;
 
-          // Pemicu Deteksi Gempa Baru & Getaran Pop-up
           checkNewEarthquakeAlert(quake);
-
           renderLatestQuake(quake);
 
           const resHistory = await fetch(
@@ -1541,18 +1588,15 @@
         }
       }
 
-      // Sistem Deteksi Gempa Baru & Pemicu Pop-up Getar
       function checkNewEarthquakeAlert(quake) {
         if (!quake) return;
         const quakeId = `${quake.Tanggal}_${quake.Jam}_${quake.Coordinates}`;
         const lastQuakeId = localStorage.getItem("last_detected_quake_id");
 
-        // Jika ID gempa dari BMKG berbeda dengan simpanan lokal (Berarti Gempa Baru Terjadi)
         if (lastQuakeId && lastQuakeId !== quakeId) {
           triggerQuakeAlertModal(quake);
         }
 
-        // Simpan ID gempa terkini
         localStorage.setItem("last_detected_quake_id", quakeId);
       }
 
@@ -1567,9 +1611,7 @@
         const modal = document.getElementById("quake-alert-modal");
         modal.classList.remove("hidden");
 
-        // Memulai getaran berulang jika didukung perangkat
         startContinuousVibration();
-
         showToast(
           `PERINGATAN: Gempa Baru Terdeteksi M ${quake.Magnitude}!`,
           "error",
@@ -1578,7 +1620,6 @@
 
       function startContinuousVibration() {
         if ("vibrate" in navigator) {
-          // Getar 800ms, jeda 400ms berulang kali
           navigator.vibrate([800, 400, 800, 400, 800]);
           clearInterval(state.vibrationInterval);
           state.vibrationInterval = setInterval(() => {
@@ -1591,7 +1632,6 @@
         const modal = document.getElementById("quake-alert-modal");
         modal.classList.add("hidden");
 
-        // Hentikan getaran perangkat
         if ("vibrate" in navigator) {
           navigator.vibrate(0);
         }
@@ -1733,6 +1773,7 @@
         return null;
       }
 
+      /* RENDER TABEL GEMPA DENGAN FORMAT TEKS RAPI UNTUK HP */
       function renderQuakeHistoryTable(list) {
         const tbody = document.getElementById("history-table-body");
         tbody.innerHTML = "";
@@ -1770,22 +1811,22 @@
           const tsunami = getTsunamiStatus(item);
           const tr = document.createElement("tr");
           tr.className =
-            "hover:bg-slate-900/60 transition border-b border-slate-800/40";
+            "hover:bg-slate-900/60 transition border-b border-slate-800/40 text-xs";
 
           tr.innerHTML = `
-            <td class="p-2 whitespace-nowrap font-medium text-slate-200">
+            <td class="p-2.5 whitespace-nowrap font-medium text-slate-200">
               <div>${item.Tanggal}</div>
-              <div class="text-[9px] text-slate-400 font-mono">${item.Jam}</div>
+              <div class="text-[10px] text-slate-400 font-mono">${item.Jam}</div>
             </td>
-            <td class="p-2 whitespace-nowrap">
+            <td class="p-2.5 whitespace-nowrap">
               <span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold">
                 M ${item.Magnitude}
               </span>
             </td>
-            <td class="p-2 whitespace-nowrap text-slate-300">${item.Kedalaman}</td>
-            <td class="p-2 text-slate-100 font-semibold max-w-xs leading-snug">${item.Wilayah}</td>
-            <td class="p-2 text-amber-300 font-medium">${item.Dirasakan || "-"}</td>
-            <td class="p-2 whitespace-nowrap">
+            <td class="p-2.5 whitespace-nowrap text-slate-300">${item.Kedalaman}</td>
+            <td class="p-2.5 text-slate-100 font-medium min-w-[160px] whitespace-normal leading-relaxed">${item.Wilayah}</td>
+            <td class="p-2.5 text-amber-300 font-medium whitespace-normal leading-relaxed">${item.Dirasakan || "-"}</td>
+            <td class="p-2.5 whitespace-nowrap">
               <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${tsunami.bg}">
                 ${tsunami.text}
               </span>
@@ -1833,9 +1874,13 @@
         state.map.invalidateSize();
       }
 
+      /* SEARCH DROPDOWN DENGAN OPTIMASI KECEPATAN & SCROLLING */
       function onSearchLocationInput(query, type) {
         clearTimeout(state.searchDebounceTimer);
         const suggestionsBox = document.getElementById(`${type}-suggestions`);
+
+        if (type === "origin") state.selectedOrigin = null;
+        if (type === "dest") state.selectedDest = null;
 
         if (!query || query.trim().length < 2) {
           suggestionsBox.classList.add("hidden");
@@ -1844,13 +1889,13 @@
 
         state.searchDebounceTimer = setTimeout(async () => {
           try {
-            const searchUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=5&addressdetails=1`;
+            const searchUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=6&addressdetails=1`;
             const res = await fetch(searchUrl);
             if (!res.ok) throw new Error();
             const results = await res.json();
             renderSuggestions(results, type);
           } catch (err) {}
-        }, 350);
+        }, 300);
       }
 
       function renderSuggestions(results, type) {
@@ -1865,9 +1910,9 @@
         results.forEach((item) => {
           const div = document.createElement("div");
           div.className =
-            "px-3 py-2 hover:bg-slate-800 text-xs text-slate-200 cursor-pointer border-b border-slate-800/50 flex items-center gap-2 transition";
+            "px-3 py-2.5 hover:bg-slate-800 text-xs text-slate-200 cursor-pointer border-b border-slate-800/60 flex items-center gap-2.5 transition active:bg-slate-700";
           div.innerHTML = `
-            <i class="fa-solid fa-location-dot ${type === "origin" ? "text-emerald-400" : "text-rose-400"} shrink-0"></i>
+            <i class="fa-solid fa-location-dot ${type === "origin" ? "text-emerald-400" : "text-rose-400"} shrink-0 text-sm"></i>
             <div class="truncate">
               <div class="font-bold text-white truncate">${item.display_name.split(",")[0]}</div>
               <div class="text-[10px] text-slate-400 truncate">${item.display_name}</div>
@@ -1896,6 +1941,7 @@
 
       function clearInput(type) {
         document.getElementById(`route-${type}-input`).value = "";
+        document.getElementById(`${type}-suggestions`).classList.add("hidden");
         if (type === "origin") state.selectedOrigin = null;
         if (type === "dest") state.selectedDest = null;
       }
@@ -1910,6 +1956,7 @@
         };
       }
 
+      /* PROSES PENCARIAN RUTE TEROPTIMASI CEPAT */
       async function calculateAndDrawRoute() {
         const originVal = document
           .getElementById("route-origin-input")
@@ -1918,18 +1965,24 @@
           .getElementById("route-dest-input")
           .value.trim();
 
-        if (!originVal || !destVal) return;
+        if (!originVal || !destVal) {
+          showToast("Mohon isi titik awal dan titik tujuan rute.", "error");
+          return;
+        }
 
         const btn = document.getElementById("btn-start-route");
         const origBtnText = btn.innerHTML;
-        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i>`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Mencari...</span>`;
         btn.disabled = true;
 
         try {
-          if (!state.selectedOrigin || !state.selectedOrigin.lat)
+          // Hanya geocode jika objek koordinat belum tersedia (mencegah double request)
+          if (!state.selectedOrigin || !state.selectedOrigin.lat) {
             state.selectedOrigin = await geocodeText(originVal);
-          if (!state.selectedDest || !state.selectedDest.lat)
+          }
+          if (!state.selectedDest || !state.selectedDest.lat) {
             state.selectedDest = await geocodeText(destVal);
+          }
 
           if (!state.selectedOrigin || !state.selectedDest)
             throw new Error("Lokasi tidak ditemukan.");
@@ -1985,6 +2038,10 @@
           });
         } catch (err) {
           console.error(err);
+          showToast(
+            "Gagal menemukan rute. Coba pilih lokasi dari opsi rekomendasi.",
+            "error",
+          );
         } finally {
           btn.innerHTML = origBtnText;
           btn.disabled = false;
