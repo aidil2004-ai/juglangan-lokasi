@@ -55,8 +55,8 @@
     <style>
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
       }
       ::-webkit-scrollbar-track {
         background: #0f172a;
@@ -120,65 +120,134 @@
   <body
     class="bg-slate-950 text-slate-100 font-sans min-h-full flex flex-col antialiased selection:bg-sky-500 selection:text-white"
   >
+    <!-- MODAL POP-UP PERINGATAN GEMPA REALTIME -->
+    <div
+      id="quake-alert-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden transition-all duration-300"
+    >
+      <div
+        class="bg-slate-900 border-2 border-rose-500/80 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl shadow-rose-950/50 space-y-4 animate-bounce-once text-center"
+      >
+        <div
+          class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-full flex items-center justify-center mx-auto border border-rose-500/40 animate-pulse text-3xl"
+        >
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <div>
+          <span
+            class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-500 text-white"
+          >
+            PERINGATAN GEMPA BARU
+          </span>
+          <h2 class="text-xl font-extrabold text-white mt-2">
+            Gempabumi Baru Terdeteksi!
+          </h2>
+          <p class="text-xs text-slate-300 mt-1">
+            BMKG mendeteksi aktivitas gempa terkini di wilayah Indonesia.
+          </p>
+        </div>
+
+        <!-- Detail Peringatan -->
+        <div
+          class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 text-left space-y-2 text-xs"
+        >
+          <div
+            class="flex justify-between items-center border-b border-slate-800/80 pb-2"
+          >
+            <span class="text-slate-400">Magnitudo</span>
+            <span id="alert-mag" class="font-extrabold text-rose-400 text-base"
+              >M -.-</span
+            >
+          </div>
+          <div
+            class="flex justify-between items-center border-b border-slate-800/80 pb-2"
+          >
+            <span class="text-slate-400">Waktu Gempa</span>
+            <span id="alert-time" class="font-semibold text-slate-200"
+              >--:--:-- WIB</span
+            >
+          </div>
+          <div class="border-b border-slate-800/80 pb-2">
+            <div class="text-slate-400 mb-0.5">Pusat / Wilayah</div>
+            <div id="alert-location" class="font-bold text-white leading-snug">
+              --
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-slate-400">Kedalaman</span>
+            <span id="alert-depth" class="font-semibold text-amber-300"
+              >-- km</span
+            >
+          </div>
+        </div>
+
+        <button
+          onclick="stopQuakeAlert()"
+          class="w-full py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2"
+        >
+          <i class="fa-solid fa-bell-slash"></i>
+          <span>Matikan Peringatan & Hentikan Getaran</span>
+        </button>
+      </div>
+    </div>
+
     <!-- ================= HEADER & NAVIGASI ================= -->
     <header class="sticky top-0 z-40 glass-nav transition-all duration-300">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16 md:h-20">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-14 md:h-16">
           <!-- Logo / Brand Title -->
           <div
-            class="flex items-center space-x-3 cursor-pointer"
+            class="flex items-center space-x-2.5 cursor-pointer"
             onclick="switchTab('cuaca')"
           >
             <div
-              class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-sky-500/20"
+              class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-emerald-400 flex items-center justify-center shadow-md shadow-sky-500/20"
             >
               <i
-                class="fa-solid font-bold text-slate-950 text-xl fa-cloud-sun"
+                class="fa-solid font-bold text-slate-950 text-base fa-cloud-sun"
               ></i>
             </div>
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
                 <span
-                  class="font-extrabold text-lg md:text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-sky-200"
+                  class="font-extrabold text-base md:text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-sky-200"
                 >
-                  PORTAL INFORMASI
-                </span>
-                <span
-                  class="text-[10px] font-semibold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full"
-                >
-                  Terpadu
+                  PORTAL INFORMASI DJUGJA
                 </span>
               </div>
-              <p class="text-xs text-slate-400 hidden sm:block">DJugja Info</p>
+              <p class="text-[11px] text-slate-400 hidden sm:block">
+                DJugja Info
+              </p>
             </div>
           </div>
 
-          <!-- Desktop Navigation Tabs (4 Menu) -->
+          <!-- Desktop Navigation Tabs -->
           <nav
-            class="hidden md:flex space-x-1 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800"
+            class="hidden md:flex space-x-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800"
           >
             <button
               onclick="switchTab('cuaca')"
               id="tab-btn-cuaca"
-              class="nav-tab text-slate-400 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2"
+              class="nav-tab text-slate-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5"
             >
               <i class="fa-solid fa-cloud-sun text-amber-400"></i>
-              <span>Cuaca & Prakiraan</span>
+              <span>Cuaca</span>
             </button>
 
             <button
               onclick="switchTab('gempa')"
               id="tab-btn-gempa"
-              class="nav-tab text-slate-400 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2"
+              class="nav-tab text-slate-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5"
             >
               <i class="fa-solid fa-volcano text-rose-400"></i>
-              <span>Info Gempa BMKG</span>
+              <span>Info Gempa</span>
             </button>
 
             <button
               onclick="switchTab('cctv')"
               id="tab-btn-cctv"
-              class="nav-tab text-slate-400 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2"
+              class="nav-tab text-slate-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5"
             >
               <i class="fa-solid fa-video text-sky-400"></i>
               <span>CCTV Situbondo</span>
@@ -187,59 +256,59 @@
             <button
               onclick="switchTab('maps')"
               id="tab-btn-maps"
-              class="nav-tab text-slate-400 hover:text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2"
+              class="nav-tab text-slate-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5"
             >
               <i class="fa-solid fa-route text-emerald-400"></i>
-              <span>Maps & Rute</span>
+              <span>Maps</span>
             </button>
           </nav>
 
-          <!-- Status Clock Widget -->
+          <!-- Status Clock Widget (Tampil di HP & Laptop) -->
           <div
-            class="hidden lg:flex items-center gap-3 text-xs text-slate-400 bg-slate-900/50 px-3 py-1.5 rounded-lg border border-slate-800"
+            class="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-300 bg-slate-900/70 px-2.5 py-1 rounded-lg border border-slate-800 shrink-0 font-mono shadow-sm"
           >
             <span
-              class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+              class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"
             ></span>
             <span id="header-clock">--:--:-- WIB</span>
           </div>
         </div>
       </div>
 
-      <!-- Mobile Navigation Bar (4 Menu) -->
+      <!-- Mobile Navigation Bar -->
       <div
-        class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-2 py-1.5 flex justify-around"
+        class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-2 py-1 flex justify-around text-[11px]"
       >
         <button
           onclick="switchTab('cuaca')"
           id="mobile-tab-btn-cuaca"
-          class="mobile-nav-tab flex-1 py-1.5 flex flex-col items-center justify-center text-xs font-medium rounded-lg text-slate-400"
+          class="mobile-nav-tab flex-1 py-1 flex flex-col items-center justify-center font-medium rounded-lg text-slate-400"
         >
-          <i class="fa-solid fa-cloud-sun text-sm mb-0.5"></i>
+          <i class="fa-solid fa-cloud-sun text-xs mb-0.5"></i>
           <span>Cuaca</span>
         </button>
         <button
           onclick="switchTab('gempa')"
           id="mobile-tab-btn-gempa"
-          class="mobile-nav-tab flex-1 py-1.5 flex flex-col items-center justify-center text-xs font-medium rounded-lg text-slate-400"
+          class="mobile-nav-tab flex-1 py-1 flex flex-col items-center justify-center font-medium rounded-lg text-slate-400"
         >
-          <i class="fa-solid fa-volcano text-sm mb-0.5"></i>
+          <i class="fa-solid fa-volcano text-xs mb-0.5"></i>
           <span>Gempa</span>
         </button>
         <button
           onclick="switchTab('cctv')"
           id="mobile-tab-btn-cctv"
-          class="mobile-nav-tab flex-1 py-1.5 flex flex-col items-center justify-center text-xs font-medium rounded-lg text-slate-400"
+          class="mobile-nav-tab flex-1 py-1 flex flex-col items-center justify-center font-medium rounded-lg text-slate-400"
         >
-          <i class="fa-solid fa-video text-sm mb-0.5"></i>
+          <i class="fa-solid fa-video text-xs mb-0.5"></i>
           <span>CCTV</span>
         </button>
         <button
           onclick="switchTab('maps')"
           id="mobile-tab-btn-maps"
-          class="mobile-nav-tab flex-1 py-1.5 flex flex-col items-center justify-center text-xs font-medium rounded-lg text-slate-400"
+          class="mobile-nav-tab flex-1 py-1 flex flex-col items-center justify-center font-medium rounded-lg text-slate-400"
         >
-          <i class="fa-solid fa-route text-sm mb-0.5"></i>
+          <i class="fa-solid fa-route text-xs mb-0.5"></i>
           <span>Maps</span>
         </button>
       </div>
@@ -248,80 +317,74 @@
     <!-- Toast Container Notification -->
     <div
       id="toast-container"
-      class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"
+      class="fixed top-16 right-4 z-50 flex flex-col gap-2 max-w-xs w-full pointer-events-none text-xs"
     ></div>
 
     <!-- MAIN CONTENT AREA -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <!-- ================================================================= -->
-      <!-- MENU 1: CUACA & PRAKIRAAN 5 HARI (TUNGGAL & PRESISI LOKASI) -->
-      <!-- ================================================================= -->
-      <section id="section-cuaca" class="tab-content space-y-6">
+    <main class="flex-grow max-w-5xl w-full mx-auto px-3 sm:px-5 lg:px-6 py-4">
+      <!-- MENU 1: CUACA & PRAKIRAAN -->
+      <section id="section-cuaca" class="tab-content space-y-4">
         <!-- Location Action Banner -->
         <div
-          class="glass-card rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-amber-500"
+          class="glass-card rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-l-4 border-l-amber-500"
         >
           <div>
             <div class="flex items-center gap-2">
               <span
-                class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20"
               >
                 <i class="fa-solid fa-location-crosshairs mr-1"></i> DETEKSI GPS
                 PRESISI
               </span>
-              <span class="text-xs text-slate-400">Integrasi Open-Meteo</span>
             </div>
-            <h1 class="text-xl md:text-2xl font-bold text-white mt-1">
+            <h1 class="text-lg font-bold text-white mt-1">
               Cuaca Presisi & Ramalan 5 Hari
             </h1>
           </div>
 
-          <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            <button
-              onclick="getUserLocation()"
-              id="btn-get-location"
-              class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20 active:scale-95"
-            >
-              <i class="fa-solid fa-crosshairs"></i>
-              <span>Gunakan Lokasi Saya (GPS Presisi)</span>
-            </button>
-          </div>
+          <button
+            onclick="getUserLocation()"
+            id="btn-get-location"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs rounded-lg transition shadow-md active:scale-95"
+          >
+            <i class="fa-solid fa-crosshairs"></i>
+            <span>Gunakan Lokasi Saya (GPS Presisi)</span>
+          </button>
         </div>
 
         <!-- SINGLE DETECTED LOCATION HEADER BADGE -->
         <div
-          class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900/80"
+          class="glass-card rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-900/80"
         >
           <div class="flex items-center space-x-3">
             <div
-              class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center shrink-0"
+              class="w-9 h-9 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center shrink-0 text-base"
             >
-              <i class="fa-solid fa-map-pin text-2xl"></i>
+              <i class="fa-solid fa-map-pin"></i>
             </div>
             <div>
               <div
-                class="text-[11px] uppercase tracking-wider text-slate-400 font-bold"
+                class="text-[10px] uppercase tracking-wider text-slate-400 font-bold"
               >
                 LOKASI PRESISI SAAT INI:
               </div>
               <div
                 id="weather-location-name"
-                class="text-lg font-bold text-white flex items-center gap-2"
+                class="text-sm font-bold text-white flex items-center gap-2"
               >
                 <span>Mendeteksi Lokasi GPS...</span>
               </div>
               <div
                 id="weather-location-detail"
-                class="text-xs text-sky-300 font-medium mt-0.5"
+                class="text-[11px] text-sky-300 font-medium mt-0.5"
               >
-                Mohon izinkan akses GPS untuk menampilkan nama Desa &amp;
-                Kecamatan lokasi Anda
+                Mohon izinkan akses GPS untuk menampilkan lokasi Anda
               </div>
             </div>
           </div>
 
           <div
-            class="flex items-center gap-3 text-xs bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800 w-full sm:w-auto justify-between sm:justify-start"
+            class="flex items-center gap-2 text-[11px] bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 w-full sm:w-auto justify-between sm:justify-start"
           >
             <span class="text-slate-400">Koordinat:</span>
             <span
@@ -333,13 +396,13 @@
         </div>
 
         <!-- Main Weather Summary & Details -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <!-- Big Current Temperature Box -->
           <div
-            class="lg:col-span-1 glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900/90 to-sky-950/40"
+            class="lg:col-span-1 glass-card rounded-xl p-4 flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900/90 to-sky-950/40"
           >
             <div
-              class="absolute -right-6 -bottom-6 text-slate-800/20 text-9xl pointer-events-none"
+              class="absolute -right-4 -bottom-4 text-slate-800/20 text-8xl pointer-events-none"
             >
               <i id="bg-weather-icon" class="fa-solid fa-cloud-sun"></i>
             </div>
@@ -347,32 +410,32 @@
             <div>
               <div class="flex justify-between items-start">
                 <span
-                  class="text-xs font-semibold uppercase tracking-wider text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded-md border border-sky-500/20"
+                  class="text-[10px] font-semibold uppercase tracking-wider text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20"
                 >
                   Cuaca Saat Ini
                 </span>
                 <span
                   id="weather-update-time"
-                  class="text-[11px] text-slate-400"
+                  class="text-[10px] text-slate-400"
                   >Diperbarui: Baru saja</span
                 >
               </div>
 
-              <div class="mt-6 flex items-center justify-between">
+              <div class="mt-4 flex items-center justify-between">
                 <div>
                   <div
                     id="weather-temp"
-                    class="text-6xl font-extrabold text-white tracking-tight"
+                    class="text-4xl font-extrabold text-white tracking-tight"
                   >
                     --°C
                   </div>
-                  <div id="weather-feels" class="text-sm text-slate-400 mt-1">
+                  <div id="weather-feels" class="text-xs text-slate-400 mt-0.5">
                     Terasa seperti --°C
                   </div>
                 </div>
                 <div
                   id="weather-icon-container"
-                  class="text-6xl text-amber-400 filter drop-shadow-lg"
+                  class="text-4xl text-amber-400 filter drop-shadow"
                 >
                   <i class="fa-solid fa-cloud-sun"></i>
                 </div>
@@ -380,17 +443,17 @@
 
               <div
                 id="weather-condition-text"
-                class="text-xl font-semibold text-slate-100 mt-4"
+                class="text-base font-semibold text-slate-100 mt-3"
               >
                 Memuat Data...
               </div>
             </div>
 
             <div
-              class="mt-6 pt-4 border-t border-slate-800 flex justify-between text-xs text-slate-400"
+              class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400"
             >
               <div>
-                Max/Min Hari ini:
+                Max/Min:
                 <span
                   id="weather-temp-maxmin"
                   class="text-slate-200 font-medium"
@@ -407,220 +470,204 @@
           </div>
 
           <!-- 6 Detailed Metrics Grid -->
-          <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div
-              class="glass-card rounded-2xl p-4 flex flex-col justify-between"
+              class="glass-card rounded-xl p-3 flex flex-col justify-between"
             >
               <div
-                class="flex items-center justify-between text-slate-400 text-xs"
+                class="flex items-center justify-between text-slate-400 text-[11px]"
               >
                 <span>Kelembapan Udara</span>
-                <i class="fa-solid fa-droplet text-sky-400 text-base"></i>
+                <i class="fa-solid fa-droplet text-sky-400 text-sm"></i>
               </div>
               <div
                 id="weather-humidity"
-                class="text-2xl font-bold text-white mt-3"
+                class="text-xl font-bold text-white mt-2"
               >
                 -- %
               </div>
-              <div class="text-[11px] text-slate-500 mt-1">
+              <div class="text-[10px] text-slate-500 mt-0.5">
                 Kelembapan relatif
               </div>
             </div>
 
             <div
-              class="glass-card rounded-2xl p-4 flex flex-col justify-between"
+              class="glass-card rounded-xl p-3 flex flex-col justify-between"
             >
               <div
-                class="flex items-center justify-between text-slate-400 text-xs"
+                class="flex items-center justify-between text-slate-400 text-[11px]"
               >
                 <span>Kecepatan Angin</span>
-                <i class="fa-solid fa-wind text-teal-400 text-base"></i>
+                <i class="fa-solid fa-wind text-teal-400 text-sm"></i>
               </div>
               <div>
                 <div
                   id="weather-wind-speed"
-                  class="text-2xl font-bold text-white mt-3"
+                  class="text-xl font-bold text-white mt-2"
                 >
                   -- km/h
                 </div>
                 <div
                   id="weather-wind-dir"
-                  class="text-[11px] text-teal-300 font-medium mt-0.5"
+                  class="text-[10px] text-teal-300 font-medium"
                 >
                   Arah: --
                 </div>
               </div>
-              <div class="text-[11px] text-slate-500 mt-1">
-                Hembusan angin 10m
-              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Angin 10m</div>
             </div>
 
             <div
-              class="glass-card rounded-2xl p-4 flex flex-col justify-between"
+              class="glass-card rounded-xl p-3 flex flex-col justify-between"
             >
               <div
-                class="flex items-center justify-between text-slate-400 text-xs"
+                class="flex items-center justify-between text-slate-400 text-[11px]"
               >
                 <span>Tekanan Udara</span>
-                <i class="fa-solid fa-gauge-high text-indigo-400 text-base"></i>
+                <i class="fa-solid fa-gauge-high text-indigo-400 text-sm"></i>
               </div>
               <div
                 id="weather-pressure"
-                class="text-2xl font-bold text-white mt-3"
+                class="text-xl font-bold text-white mt-2"
               >
                 -- hPa
               </div>
-              <div class="text-[11px] text-slate-500 mt-1">
+              <div class="text-[10px] text-slate-500 mt-0.5">
                 Tekanan permukaan
               </div>
             </div>
 
             <div
-              class="glass-card rounded-2xl p-4 flex flex-col justify-between"
+              class="glass-card rounded-xl p-3 flex flex-col justify-between"
             >
               <div
-                class="flex items-center justify-between text-slate-400 text-xs"
+                class="flex items-center justify-between text-slate-400 text-[11px]"
               >
                 <span>Indeks UV</span>
-                <i class="fa-solid fa-sun text-amber-400 text-base"></i>
+                <i class="fa-solid fa-sun text-amber-400 text-sm"></i>
               </div>
               <div>
-                <div id="weather-uv" class="text-2xl font-bold text-white mt-3">
+                <div id="weather-uv" class="text-xl font-bold text-white mt-2">
                   --
                 </div>
                 <div
                   id="weather-uv-status"
-                  class="text-[11px] font-medium text-emerald-400 mt-0.5"
+                  class="text-[10px] font-medium text-emerald-400"
                 >
                   Kategori: -
                 </div>
               </div>
-              <div class="text-[11px] text-slate-500 mt-1">
-                Paparan radiasi ultraviolet
-              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Radiasi UV</div>
             </div>
 
             <div
-              class="glass-card rounded-2xl p-4 flex flex-col justify-between"
+              class="glass-card rounded-xl p-3 flex flex-col justify-between"
             >
               <div
-                class="flex items-center justify-between text-slate-400 text-xs"
+                class="flex items-center justify-between text-slate-400 text-[11px]"
               >
                 <span>Curah Hujan</span>
                 <i
-                  class="fa-solid fa-cloud-showers-heavy text-blue-400 text-base"
+                  class="fa-solid fa-cloud-showers-heavy text-blue-400 text-sm"
                 ></i>
               </div>
-              <div id="weather-rain" class="text-2xl font-bold text-white mt-3">
+              <div id="weather-rain" class="text-xl font-bold text-white mt-2">
                 -- mm
               </div>
-              <div class="text-[11px] text-slate-500 mt-1">
-                Intensitas hujan terkini
+              <div class="text-[10px] text-slate-500 mt-0.5">
+                Intensitas hujan
               </div>
             </div>
 
             <div
-              class="glass-card rounded-2xl p-4 flex flex-col justify-between"
+              class="glass-card rounded-xl p-3 flex flex-col justify-between"
             >
               <div
-                class="flex items-center justify-between text-slate-400 text-xs"
+                class="flex items-center justify-between text-slate-400 text-[11px]"
               >
-                <span>Tingkat Kenyamanan</span>
-                <i
-                  class="fa-solid fa-face-smile text-emerald-400 text-base"
-                ></i>
+                <span>Kenyamanan</span>
+                <i class="fa-solid fa-face-smile text-emerald-400 text-sm"></i>
               </div>
               <div
                 id="weather-comfort"
-                class="text-lg font-bold text-emerald-300 mt-3"
+                class="text-base font-bold text-emerald-300 mt-2"
               >
                 Ideal
               </div>
-              <div class="text-[11px] text-slate-500 mt-1">
-                Indeks suhu & kelembapan
+              <div class="text-[10px] text-slate-500 mt-0.5">
+                Indeks suhu & lembap
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 5-Day Forecast Grid (Terbarui Otomatis Begitu Lokasi Ditemukan) -->
-        <div class="glass-card rounded-2xl p-5">
+        <!-- 5-Day Forecast Grid -->
+        <div class="glass-card rounded-xl p-4">
           <div
-            class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3"
+            class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2"
           >
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
               <i class="fa-solid fa-calendar-week text-sky-400"></i>
               <span>Prakiraan Cuaca 5 Hari Ke Depan</span>
             </h3>
-            <span class="text-xs text-sky-300 font-medium"
-              >Berdasarkan Lokasi Terdaftar</span
-            >
           </div>
 
           <div
             id="forecast-container"
-            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5"
           >
-            <!-- Forecast cards inserted dynamically via JS -->
-            <div class="text-slate-500 text-xs col-span-full text-center py-6">
+            <div class="text-slate-500 text-xs col-span-full text-center py-4">
               Memuat prakiraan cuaca 5 hari...
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ================================================================= -->
       <!-- MENU 2: INFO GEMPA BMKG -->
-      <!-- ================================================================= -->
-      <section id="section-gempa" class="tab-content hidden space-y-6">
+      <section id="section-gempa" class="tab-content hidden space-y-4">
         <!-- Banner Header -->
         <div
-          class="glass-card rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-rose-500"
+          class="glass-card rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-l-4 border-l-rose-500"
         >
           <div>
             <div class="flex items-center gap-2">
               <span
-                class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"
               >
                 <i class="fa-solid fa-tower-cell mr-1"></i> BMKG TEWS REALTIME
               </span>
-              <span class="text-xs text-slate-400"
-                >Badan Meteorologi, Klimatologi, dan Geofisika</span
-              >
             </div>
-            <h1 class="text-xl md:text-2xl font-bold text-white mt-1">
+            <h1 class="text-lg font-bold text-white mt-1">
               Gempabumi & Potensi Tsunami
             </h1>
-            <p class="text-sm text-slate-400 mt-1">
-              Data gempabumi terkini di Indonesia beserta riwayat gempa
-              dirasakan 2 hari terakhir secara resmi dan akurat.
+            <p class="text-xs text-slate-400 mt-0.5">
+              Data gempabumi terkini di Indonesia secara resmi BMKG.
             </p>
           </div>
 
           <button
             onclick="loadEarthquakeData()"
-            class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm rounded-xl border border-slate-700 transition flex items-center gap-2"
+            class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs rounded-lg border border-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto"
           >
             <i class="fa-solid fa-arrows-rotate"></i>
-            <span>Refresh Data BMKG</span>
+            <span>Refresh</span>
           </button>
         </div>
 
         <!-- MAIN LATEST EARTHQUAKE CARD -->
         <div
           id="latest-quake-card"
-          class="glass-card rounded-2xl p-6 relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-rose-950/30"
+          class="glass-card rounded-xl p-4 sm:p-5 relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-rose-950/30"
         >
-          <!-- Skeleton Loader for Quake -->
+          <!-- Skeleton Loader -->
           <div
             id="quake-loading"
-            class="py-12 flex flex-col items-center justify-center"
+            class="py-8 flex flex-col items-center justify-center"
           >
             <div
-              class="w-10 h-10 border-4 border-rose-500/20 border-t-rose-500 rounded-full animate-spin mb-3"
+              class="w-8 h-8 border-3 border-rose-500/20 border-t-rose-500 rounded-full animate-spin mb-2"
             ></div>
-            <p class="text-slate-400 text-sm">
+            <p class="text-slate-400 text-xs">
               Mengambil data gempabumi terbaru BMKG...
             </p>
           </div>
@@ -628,96 +675,94 @@
           <!-- Loaded Content -->
           <div id="quake-content" class="hidden">
             <div
-              class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800"
+              class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-800/80"
             >
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <span
-                  class="text-xs font-bold uppercase tracking-wider text-rose-400"
-                  >Gempabumi Terkini M ≥ 5.0 / Dirasakan</span
+                  class="text-[10px] font-bold uppercase tracking-wider text-rose-400"
+                  >GEMPABUMI TERKINI</span
                 >
                 <span
                   id="quake-time-badge"
-                  class="text-xs text-slate-400 bg-slate-800 px-2.5 py-0.5 rounded-full"
+                  class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full"
                   >--</span
                 >
               </div>
 
-              <!-- Tsunami Potential Indicator Badge -->
               <div
                 id="tsunami-status-pill"
-                class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-lg"
+                class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow"
               ></div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-              <div class="lg:col-span-7 space-y-5">
-                <div class="flex items-start gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+              <div class="md:col-span-7 space-y-3">
+                <div class="flex items-start gap-3">
                   <div
                     id="quake-mag-badge"
-                    class="w-20 h-20 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex flex-col items-center justify-center shrink-0 shadow-xl"
+                    class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex flex-col items-center justify-center shrink-0 shadow-md"
                   >
-                    <span class="text-[10px] uppercase font-bold text-slate-300"
-                      >Magnitudo</span
+                    <span
+                      class="text-[8px] sm:text-[9px] uppercase font-bold text-slate-300"
+                      >MAGNITUDO</span
                     >
                     <span
                       id="quake-magnitude"
-                      class="text-3xl font-extrabold text-white"
+                      class="text-xl sm:text-2xl font-extrabold text-white"
                       >--</span
                     >
                   </div>
 
-                  <div>
+                  <div class="flex-1 min-w-0">
                     <h2
                       id="quake-wilayah"
-                      class="text-xl md:text-2xl font-bold text-white leading-tight"
+                      class="text-sm sm:text-base font-bold text-white leading-snug break-words"
                     >
                       Memuat data wilayah...
                     </h2>
                     <p
                       id="quake-distance-info"
-                      class="text-xs font-medium text-amber-400 mt-1 flex items-center gap-1"
+                      class="text-[11px] font-medium text-amber-400 mt-1 flex items-center gap-1"
                     >
                       <i class="fa-solid fa-location-arrow"></i>
-                      <span>Menghitung jarak dari lokasi Anda...</span>
+                      <span>Menghitung jarak...</span>
                     </p>
                   </div>
                 </div>
 
                 <!-- Specs Grid -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-xs">
                   <div
-                    class="bg-slate-950/60 p-3 rounded-xl border border-slate-800"
+                    class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800"
                   >
-                    <div class="text-[11px] text-slate-400">Kedalaman</div>
+                    <div class="text-[10px] text-slate-400">Kedalaman</div>
                     <div
                       id="quake-kedalaman"
-                      class="text-base font-bold text-slate-100 mt-0.5"
+                      class="text-xs sm:text-sm font-bold text-slate-100 mt-0.5"
                     >
                       --
                     </div>
                   </div>
 
                   <div
-                    class="bg-slate-950/60 p-3 rounded-xl border border-slate-800"
+                    class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800"
                   >
-                    <div class="text-[11px] text-slate-400">Koordinat</div>
+                    <div class="text-[10px] text-slate-400">Koordinat</div>
                     <div
                       id="quake-koordinat"
-                      class="text-base font-mono font-bold text-slate-100 mt-0.5"
+                      class="text-xs sm:text-sm font-mono font-bold text-slate-100 mt-0.5"
                     >
                       --
                     </div>
                   </div>
 
                   <div
-                    class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 col-span-2 sm:col-span-1"
+                    class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 col-span-2 sm:col-span-1"
                   >
-                    <div class="text-[11px] text-slate-400">
-                      Skala Dirasakan (MMI)
-                    </div>
+                    <div class="text-[10px] text-slate-400">Skala (MMI)</div>
                     <div
                       id="quake-dirasakan"
-                      class="text-xs font-semibold text-sky-300 mt-1 truncate"
+                      class="text-xs font-semibold text-sky-300 mt-0.5 truncate"
                     >
                       --
                     </div>
@@ -726,9 +771,11 @@
               </div>
 
               <!-- Shakemap Image -->
-              <div class="lg:col-span-5 flex flex-col items-center">
+              <div
+                class="md:col-span-5 flex flex-col items-center mt-2 md:mt-0"
+              >
                 <div
-                  class="relative w-full max-w-sm rounded-xl overflow-hidden border border-slate-800 shadow-xl bg-slate-950 group"
+                  class="relative w-full max-w-[220px] sm:max-w-[260px] rounded-lg overflow-hidden border border-slate-800 shadow-md bg-slate-950 group"
                 >
                   <img
                     id="quake-shakemap"
@@ -740,13 +787,13 @@
                     id="quake-shakemap-link"
                     href="#"
                     target="_blank"
-                    class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-xs font-medium text-white gap-2"
+                    class="absolute inset-0 bg-slate-950/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-[11px] font-medium text-white gap-1"
                   >
-                    <i class="fa-solid fa-magnifying-glass-plus text-base"></i>
-                    Lihat Gambar Peta BMKG
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    Buka Peta BMKG
                   </a>
                 </div>
-                <span class="text-[11px] text-slate-500 mt-2"
+                <span class="text-[10px] text-slate-500 mt-1"
                   >Peta Shakemap Resmi BMKG</span
                 >
               </div>
@@ -754,24 +801,23 @@
           </div>
         </div>
 
-        <!-- EARTHQUAKE HISTORY TABLE WITH POTENSI TSUNAMI COLUMN -->
-        <div class="glass-card rounded-2xl p-5 md:p-6">
+        <!-- EARTHQUAKE HISTORY TABLE -->
+        <div class="glass-card rounded-xl p-4">
           <div
-            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 border-b border-slate-800 pb-4"
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 border-b border-slate-800 pb-3"
           >
             <div>
-              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <h3
+                class="text-sm font-bold text-white flex items-center gap-1.5"
+              >
                 <i class="fa-solid fa-clock-rotate-left text-rose-400"></i>
                 <span>Riwayat Gempa Dirasakan (2 Hari Terakhir)</span>
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Daftar peristiwa gempabumi beserta analisis potensi tsunami
-              </p>
             </div>
 
             <span
               id="history-count-badge"
-              class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-sky-400 border border-slate-700"
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-sky-400 border border-slate-700"
             >
               0 Kejadian
             </span>
@@ -779,17 +825,17 @@
 
           <!-- Responsive Table Container -->
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
+            <table class="w-full text-left border-collapse text-[11px]">
               <thead>
                 <tr
                   class="bg-slate-900/90 text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-800"
                 >
-                  <th class="p-3.5 rounded-l-xl">Waktu & Tanggal</th>
-                  <th class="p-3.5">Magnitudo</th>
-                  <th class="p-3.5">Kedalaman</th>
-                  <th class="p-3.5">Lokasi / Wilayah</th>
-                  <th class="p-3.5">Skala Dirasakan (MMI)</th>
-                  <th class="p-3.5 rounded-r-xl">Potensi Tsunami</th>
+                  <th class="p-2.5 rounded-l-lg">Waktu</th>
+                  <th class="p-2.5">Magnitudo</th>
+                  <th class="p-2.5">Kedalaman</th>
+                  <th class="p-2.5">Lokasi</th>
+                  <th class="p-2.5">Dirasakan (MMI)</th>
+                  <th class="p-2.5 rounded-r-lg">Potensi Tsunami</th>
                 </tr>
               </thead>
               <tbody
@@ -797,7 +843,7 @@
                 class="divide-y divide-slate-800/60"
               >
                 <tr>
-                  <td colspan="6" class="text-center py-8 text-slate-500">
+                  <td colspan="6" class="text-center py-6 text-slate-500">
                     Memuat data riwayat gempa BMKG...
                   </td>
                 </tr>
@@ -807,118 +853,75 @@
         </div>
       </section>
 
-      <!-- ================================================================= -->
-      <!-- MENU 3: CCTV SITUBONDO (DIRECT PORTAL LINK) -->
-      <!-- ================================================================= -->
-      <section id="section-cctv" class="tab-content hidden space-y-6">
-        <!-- Direct Link Banner Card -->
+      <!-- MENU 3: CCTV SITUBONDO -->
+      <section id="section-cctv" class="tab-content hidden space-y-4">
         <div
-          class="glass-card rounded-3xl p-8 md:p-12 text-center max-w-4xl mx-auto border border-sky-500/20 bg-gradient-to-b from-slate-900 via-slate-900 to-sky-950/30 shadow-2xl relative overflow-hidden"
+          class="glass-card rounded-2xl p-6 sm:p-8 text-center max-w-2xl mx-auto border border-sky-500/20 bg-gradient-to-b from-slate-900 via-slate-900 to-sky-950/30 shadow-xl relative overflow-hidden"
         >
-          <!-- Glow accents -->
           <div
-            class="absolute -top-24 -left-24 w-60 h-60 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"
-          ></div>
-          <div
-            class="absolute -bottom-24 -right-24 w-60 h-60 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"
-          ></div>
-
-          <div
-            class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-sky-500 to-cyan-400 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-sky-500/20"
+            class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-cyan-400 flex items-center justify-center mx-auto mb-4 shadow-md shadow-sky-500/20"
           >
-            <i class="fa-solid fa-video text-3xl text-slate-950"></i>
+            <i class="fa-solid fa-video text-2xl text-slate-950"></i>
           </div>
 
           <span
-            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-300 border border-sky-500/30 mb-4"
+            class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-sky-500/10 text-sky-300 border border-sky-500/30 mb-3"
           >
             <span
-              class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"
+              class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"
             ></span>
             STREAM LIVE RESMI SITUBONDO
           </span>
 
           <h1
-            class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight"
+            class="text-xl sm:text-2xl font-extrabold text-white tracking-tight"
           >
-            Portal CCTV Live Lalu Lintas & Publik Situbondo
+            Portal CCTV Live Lalu Lintas & Publik
           </h1>
 
           <p
-            class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto mt-4 leading-relaxed"
+            class="text-xs text-slate-300 max-w-lg mx-auto mt-2 leading-relaxed"
           >
-            Pantau kondisi lalu lintas, jalan raya utama, alun-alun, dan titik
-            strategis Kabupaten Situbondo secara langsung melalui server
-            streaming resmi DISKOMINFO Kabupaten Situbondo.
+            Pantau kondisi lalu lintas, jalan raya utama, dan titik strategis
+            Kabupaten Situbondo secara langsung via server DISKOMINFO.
           </p>
 
-          <div
-            class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
+          <div class="mt-6">
             <a
               href="https://cctv.situbondokab.go.id/"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-400 hover:to-cyan-400 text-slate-950 font-extrabold text-base rounded-2xl shadow-xl shadow-sky-500/25 transition duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-400 hover:to-cyan-400 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-sky-500/20 transition active:scale-95"
             >
-              <i class="fa-solid fa-external-link-alt text-lg"></i>
+              <i class="fa-solid fa-external-link-alt"></i>
               <span>Buka Portal CCTV Situbondo</span>
             </a>
-          </div>
-
-          <div
-            class="mt-10 pt-6 border-t border-slate-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-400 max-w-2xl mx-auto"
-          >
-            <div class="flex items-center justify-center gap-2">
-              <i class="fa-solid fa-shield-halved text-sky-400"></i>
-              <span>Server Resmi Pemkab</span>
-            </div>
-            <div class="flex items-center justify-center gap-2">
-              <i class="fa-solid fa-bolt text-amber-400"></i>
-              <span>Akses Cepat & Real-Time</span>
-            </div>
-            <div class="flex items-center justify-center gap-2">
-              <i class="fa-solid fa-location-dot text-emerald-400"></i>
-              <span>Seluruh Titik Utama</span>
-            </div>
           </div>
         </div>
       </section>
 
-      <!-- ================================================================= -->
-      <!-- MENU 4: MAPS & RUTE SATELIT (LEAFLET.JS + ESRI) -->
-      <!-- ================================================================= -->
-      <section id="section-maps" class="tab-content hidden space-y-6">
-        <!-- Top Routing Control Panel -->
-        <div
-          class="glass-card rounded-2xl p-5 md:p-6 border-l-4 border-l-emerald-500"
-        >
+      <!-- MENU 4: MAPS & RUTE SATELIT -->
+      <section id="section-maps" class="tab-content hidden space-y-4">
+        <div class="glass-card rounded-xl p-4 border-l-4 border-l-emerald-500">
           <div
-            class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6"
+            class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-4"
           >
             <div>
               <div class="flex items-center gap-2">
                 <span
-                  class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                 >
-                  <i class="fa-solid fa-route mr-1"></i> NAVIGASI SATELIT & RUTE
+                  <i class="fa-solid fa-route mr-1"></i> NAVIGASI SATELIT
                 </span>
-                <span class="text-xs text-slate-400"
-                  >OpenStreetMap & OSRM Engine</span
-                >
               </div>
-              <h1 class="text-xl md:text-2xl font-bold text-white mt-1">
+              <h1 class="text-lg font-bold text-white mt-1">
                 Pencari Rute Titik Asal ke Tujuan
               </h1>
-              <p class="text-sm text-slate-400 mt-1">
-                Ketik lokasi/desa titik awal & tujuan untuk menampilkan jalur
-                navigasi, jarak akurat, dan estimasi waktu tempuh.
-              </p>
             </div>
 
             <button
               onclick="setCurrentLocationAsOrigin()"
-              class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-emerald-300 font-medium text-xs sm:text-sm rounded-xl border border-slate-700 transition flex items-center gap-2"
+              class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-medium text-xs rounded-lg border border-slate-700 transition flex items-center gap-1.5"
             >
               <i class="fa-solid fa-crosshairs"></i>
               <span>Gunakan GPS Saya Sebagai Titik Awal</span>
@@ -926,14 +929,10 @@
           </div>
 
           <!-- Inputs Form Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <!-- Titik Awal (Origin) -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div class="md:col-span-5 relative">
-              <label
-                class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5"
-              >
-                <i class="fa-solid fa-circle-dot text-emerald-400"></i>
-                <span>Titik Awal (Desa / Lokasi Asal):</span>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">
+                Titik Awal (Asal):
               </label>
 
               <div class="relative">
@@ -943,167 +942,106 @@
                   placeholder="Contoh: Desa Patokan, Situbondo..."
                   autocomplete="off"
                   oninput="onSearchLocationInput(this.value, 'origin')"
-                  class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-white rounded-xl px-4 py-3 text-sm placeholder-slate-500 transition"
+                  class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 text-white rounded-lg px-3 py-2 text-xs placeholder-slate-500 transition"
                 />
-
                 <button
                   onclick="clearInput('origin')"
-                  class="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300"
+                  class="absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-300 text-xs"
                 >
                   <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
 
-              <!-- Autocomplete Suggestions Box Origin -->
               <div
                 id="origin-suggestions"
-                class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-xl shadow-2xl overflow-hidden hidden max-h-56 overflow-y-auto"
+                class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/95 border border-slate-700 rounded-lg shadow-xl overflow-hidden hidden max-h-48 overflow-y-auto"
               ></div>
             </div>
 
-            <!-- Titik Akhir (Destination) -->
             <div class="md:col-span-5 relative">
-              <label
-                class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5"
-              >
-                <i class="fa-solid fa-location-dot text-rose-400"></i>
-                <span>Titik Akhir (Desa / Lokasi Tujuan):</span>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">
+                Titik Akhir (Tujuan):
               </label>
 
               <div class="relative">
                 <input
                   type="text"
                   id="route-dest-input"
-                  placeholder="Contoh: Desa Besuki, Situbondo..."
+                  placeholder="Contoh: Besuki, Situbondo..."
                   autocomplete="off"
                   oninput="onSearchLocationInput(this.value, 'dest')"
-                  class="w-full bg-slate-900 border border-slate-700 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-white rounded-xl px-4 py-3 text-sm placeholder-slate-500 transition"
+                  class="w-full bg-slate-900 border border-slate-700 focus:border-rose-500 text-white rounded-lg px-3 py-2 text-xs placeholder-slate-500 transition"
                 />
-
                 <button
                   onclick="clearInput('dest')"
-                  class="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300"
+                  class="absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-300 text-xs"
                 >
                   <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
 
-              <!-- Autocomplete Suggestions Box Dest -->
               <div
                 id="dest-suggestions"
-                class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-xl shadow-2xl overflow-hidden hidden max-h-56 overflow-y-auto"
+                class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/95 border border-slate-700 rounded-lg shadow-xl overflow-hidden hidden max-h-48 overflow-y-auto"
               ></div>
             </div>
 
-            <!-- Submit Button -->
             <div class="md:col-span-2 flex items-end">
               <button
                 onclick="calculateAndDrawRoute()"
                 id="btn-start-route"
-                class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20 active:scale-95 flex items-center justify-center gap-2"
+                class="w-full py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-xs rounded-lg transition shadow active:scale-95 flex items-center justify-center gap-1.5"
               >
                 <i class="fa-solid fa-play"></i>
                 <span>Mulai Rute</span>
               </button>
             </div>
           </div>
-
-          <!-- Quick Preset Location Pills -->
-          <div
-            class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap items-center gap-2 text-xs"
-          >
-            <span class="text-slate-400 font-medium"
-              >Pilihan Cepat Desa Situbondo:</span
-            >
-            <button
-              onclick="setQuickPreset('Patokan, Situbondo')"
-              class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-slate-800 px-2.5 py-1 rounded-lg transition"
-            >
-              Patokan
-            </button>
-            <button
-              onclick="setQuickPreset('Mimbaan, Panji, Situbondo')"
-              class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-slate-800 px-2.5 py-1 rounded-lg transition"
-            >
-              Mimbaan
-            </button>
-            <button
-              onclick="setQuickPreset('Juglangan, Situbondo')"
-              class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-slate-800 px-2.5 py-1 rounded-lg transition"
-            >
-              Juglangan
-            </button>
-            <button
-              onclick="setQuickPreset('Besuki, Situbondo')"
-              class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-slate-800 px-2.5 py-1 rounded-lg transition"
-            >
-              Besuki
-            </button>
-            <button
-              onclick="setQuickPreset('Kapongan, Situbondo')"
-              class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-slate-800 px-2.5 py-1 rounded-lg transition"
-            >
-              Kapongan
-            </button>
-            <button
-              onclick="setQuickPreset('Pasir Putih, Situbondo')"
-              class="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-slate-800 px-2.5 py-1 rounded-lg transition"
-            >
-              Pasir Putih
-            </button>
-          </div>
         </div>
 
         <!-- Route Details Summary Box -->
         <div
           id="route-summary-card"
-          class="glass-card rounded-2xl p-4 bg-slate-900/90 border border-emerald-500/30 hidden"
+          class="glass-card rounded-xl p-3 bg-slate-900/90 border border-emerald-500/30 hidden"
         >
           <div
-            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
           >
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3">
               <div
-                class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0"
+                class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0 text-base"
               >
-                <i class="fa-solid fa-route text-2xl"></i>
+                <i class="fa-solid fa-route"></i>
               </div>
               <div>
-                <div class="text-xs uppercase font-semibold text-slate-400">
-                  Rincian Navigasi Perjalanan
+                <div class="text-[10px] uppercase font-semibold text-slate-400">
+                  Rincian Perjalanan
                 </div>
                 <div
                   id="route-title-text"
-                  class="text-sm font-bold text-white mt-0.5"
+                  class="text-xs font-bold text-white mt-0.5"
                 >
                   Titik Awal ➔ Titik Tujuan
                 </div>
               </div>
             </div>
 
-            <div
-              class="flex items-center gap-4 w-full sm:w-auto justify-around sm:justify-end border-t sm:border-t-0 border-slate-800 pt-3 sm:pt-0"
-            >
-              <div class="text-center sm:text-right">
-                <div class="text-[11px] text-slate-400">Total Jarak</div>
-                <div
+            <div class="flex items-center gap-3 text-xs">
+              <div>
+                <span class="text-slate-400 text-[10px]">Jarak:</span>
+                <span
                   id="route-distance-val"
-                  class="text-xl font-extrabold text-emerald-400"
+                  class="font-extrabold text-emerald-400 ml-1"
+                  >0 km</span
                 >
-                  0 km
-                </div>
               </div>
-
-              <div class="h-8 w-px bg-slate-800"></div>
-
-              <div class="text-center sm:text-right">
-                <div class="text-[11px] text-slate-400">Estimasi Waktu</div>
-                <div
+              <div>
+                <span class="text-slate-400 text-[10px]">Waktu:</span>
+                <span
                   id="route-duration-val"
-                  class="text-xl font-extrabold text-sky-400"
+                  class="font-extrabold text-sky-400 ml-1"
+                  >0 mnt</span
                 >
-                  0 menit
-                </div>
               </div>
             </div>
           </div>
@@ -1111,24 +1049,11 @@
 
         <!-- Leaflet Map Container -->
         <div
-          class="glass-card rounded-2xl p-2 bg-slate-900 overflow-hidden shadow-2xl relative"
+          class="glass-card rounded-xl p-1.5 bg-slate-900 overflow-hidden shadow-xl relative"
         >
           <div
-            class="mb-2 px-3 py-2 bg-slate-950/80 rounded-lg flex items-center justify-between text-xs text-slate-300 border border-slate-800"
-          >
-            <span class="flex items-center gap-2">
-              <i class="fa-solid fa-earth-asia text-emerald-400"></i>
-              <strong class="text-white"
-                >Peta Satelit ESRI World Imagery + Labels</strong
-              >
-            </span>
-            <span class="text-slate-400"
-              >Terbuka Otomatis Tanpa Blank Screen</span
-            >
-          </div>
-          <div
             id="map-container"
-            class="w-full h-[520px] rounded-xl z-10"
+            class="w-full h-[380px] sm:h-[450px] rounded-lg z-10"
           ></div>
         </div>
       </section>
@@ -1136,35 +1061,33 @@
 
     <!-- FOOTER -->
     <footer
-      class="mt-auto border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500"
+      class="mt-auto border-t border-slate-800/80 bg-slate-950 py-4 text-center text-[11px] text-slate-500"
     >
       <div
-        class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3"
+        class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2"
       >
         <div>
-          Portal Informasi Aidil &copy; <span id="footer-year">2026</span> •
-          Integrasi OpenStreetMap, Open-Meteo & BMKG
+          Portal Informasi AIDIL &copy; <span id="footer-year">2027</span>
         </div>
-        <div class="flex items-center gap-4 text-slate-400">
-          <span>Sumber Resmi:</span>
+        <div class="flex items-center gap-3 text-slate-400 text-[10px]">
           <a
             href="https://cctv.situbondokab.go.id/"
             target="_blank"
-            class="hover:text-sky-400 transition"
+            class="hover:text-sky-400"
             >Diskominfo Situbondo</a
           >
           <span>•</span>
           <a
             href="https://open-meteo.com/"
             target="_blank"
-            class="hover:text-amber-400 transition"
+            class="hover:text-amber-400"
             >Open-Meteo</a
           >
           <span>•</span>
           <a
             href="https://data.bmkg.go.id/"
             target="_blank"
-            class="hover:text-rose-400 transition"
+            class="hover:text-rose-400"
             >BMKG TEWS</a
           >
         </div>
@@ -1173,10 +1096,9 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-      // App State Management
       const state = {
         activeTab: "cuaca",
-        userCoords: { lat: -7.7063, lng: 114.0039 }, // Coordinates fallback
+        userCoords: { lat: -7.7063, lng: 114.0039 },
         locationName: "Mendeteksi Lokasi GPS...",
         locationDetail: "Mencari lokasi presisi Anda...",
         quakeDataLoaded: false,
@@ -1187,9 +1109,9 @@
         selectedOrigin: null,
         selectedDest: null,
         searchDebounceTimer: null,
+        vibrationInterval: null,
       };
 
-      // WMO Weather Codes Translation to Indonesian & Icons
       const weatherCodes = {
         0: { title: "Cerah", icon: "fa-sun", color: "text-amber-400" },
         1: {
@@ -1257,21 +1179,19 @@
         },
       };
 
-      // Initialize Application
       window.onload = function () {
         updateClock();
         setInterval(updateClock, 1000);
-
         switchTab("cuaca");
-
-        // Detect User Location immediately on startup
         getUserLocation();
         loadEarthquakeData();
+
+        // Polling Data Gempa Otomatis setiap 20 detik
+        setInterval(loadEarthquakeData, 20000);
 
         document.getElementById("footer-year").textContent =
           new Date().getFullYear();
 
-        // Autocomplete click-outside listener
         document.addEventListener("click", function (e) {
           if (
             !e.target.closest("#route-origin-input") &&
@@ -1290,18 +1210,17 @@
         });
       };
 
-      // Live clock function
       function updateClock() {
         const now = new Date();
-        const timeStr =
-          now.toLocaleTimeString("id-ID", { hour12: false }) + " WIB";
-        document.getElementById("header-clock").textContent = timeStr;
+        const clockEl = document.getElementById("header-clock");
+        if (clockEl) {
+          clockEl.textContent =
+            now.toLocaleTimeString("id-ID", { hour12: false }) + " WIB";
+        }
       }
 
-      // Tab Switcher Logic
       function switchTab(tabName) {
         state.activeTab = tabName;
-
         document
           .querySelectorAll(".tab-content")
           .forEach((el) => el.classList.add("hidden"));
@@ -1309,18 +1228,16 @@
         const activeSection = document.getElementById(`section-${tabName}`);
         if (activeSection) activeSection.classList.remove("hidden");
 
-        // Highlight Desktop Nav Buttons
         document.querySelectorAll(".nav-tab").forEach((btn) => {
-          btn.classList.remove("bg-slate-800", "text-white", "shadow-md");
+          btn.classList.remove("bg-slate-800", "text-white", "shadow-sm");
           btn.classList.add("text-slate-400");
         });
         const activeBtn = document.getElementById(`tab-btn-${tabName}`);
         if (activeBtn) {
-          activeBtn.classList.add("bg-slate-800", "text-white", "shadow-md");
+          activeBtn.classList.add("bg-slate-800", "text-white", "shadow-sm");
           activeBtn.classList.remove("text-slate-400");
         }
 
-        // Highlight Mobile Nav Buttons
         document.querySelectorAll(".mobile-nav-tab").forEach((btn) => {
           btn.classList.remove("text-sky-400", "bg-slate-800");
           btn.classList.add("text-slate-400");
@@ -1333,7 +1250,6 @@
           activeMobileBtn.classList.remove("text-slate-400");
         }
 
-        // If switching to Maps tab, render/resize map properly
         if (tabName === "maps") {
           setTimeout(() => {
             initOrResizeMap();
@@ -1341,31 +1257,24 @@
         }
       }
 
-      // ==========================================
-      // CUACA & GPS LOCATIONS
-      // ==========================================
       function getUserLocation() {
         if (!navigator.geolocation) {
-          showToast("Browser Anda tidak mendukung Geolocation GPS.", "error");
+          showToast("Browser tidak mendukung GPS.", "error");
           loadFallbackWeather();
           return;
         }
 
         const btn = document.getElementById("btn-get-location");
         if (btn) {
-          btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Mendeteksi GPS Presisi...</span>`;
+          btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Mendeteksi GPS...</span>`;
           btn.disabled = true;
         }
-
-        showToast("Meminta posisi GPS presisi Anda...", "info");
 
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             state.userCoords = { lat, lng };
-
-            showToast("GPS terdeteksi! Mendapatkan nama desa...", "info");
 
             await fetchLocationDetail(lat, lng);
             await loadWeather(lat, lng);
@@ -1381,10 +1290,6 @@
               btn.innerHTML = `<i class="fa-solid fa-crosshairs"></i> <span>Gunakan Lokasi Saya (GPS Presisi)</span>`;
               btn.disabled = false;
             }
-            showToast(
-              "Izin lokasi ditolak/tidak ditemukan. Menampilkan data fallback Situbondo.",
-              "warning",
-            );
             loadFallbackWeather();
           },
           { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 },
@@ -1416,11 +1321,9 @@
               addr.city ||
               "Kecamatan Terdeteksi";
 
-            // Format murni Desa dan Kecamatan tanpa frasa Kabupaten
             state.locationName = `${desa}, ${kec}`;
             state.locationDetail = `Desa/Kel. ${desa} • Kec. ${kec}`;
 
-            // Update Location Header
             document.getElementById("weather-location-name").textContent =
               state.locationName;
             document.getElementById("weather-location-detail").textContent =
@@ -1443,7 +1346,7 @@
       function loadFallbackWeather() {
         state.locationName = "Akses GPS Belum Diaktifkan";
         state.locationDetail =
-          'Klik tombol "Gunakan Lokasi Saya" di atas untuk mengaktifkan lokasi presisi desa Anda';
+          'Klik tombol "Gunakan Lokasi Saya" untuk mendeteksi lokasi presisi Anda';
 
         document.getElementById("weather-location-name").textContent =
           state.locationName;
@@ -1458,7 +1361,6 @@
       async function loadWeather(lat, lng) {
         try {
           const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,relative_humidity_2m_max&timezone=auto`;
-
           const res = await fetch(url);
           if (!res.ok) throw new Error();
           const data = await res.json();
@@ -1480,7 +1382,7 @@
           const iconContainer = document.getElementById(
             "weather-icon-container",
           );
-          iconContainer.className = `text-6xl ${codeInfo.color} filter drop-shadow-lg`;
+          iconContainer.className = `text-4xl ${codeInfo.color} filter drop-shadow`;
           iconContainer.innerHTML = `<i class="fa-solid ${codeInfo.icon}"></i>`;
           document.getElementById("bg-weather-icon").className =
             `fa-solid ${codeInfo.icon}`;
@@ -1498,7 +1400,6 @@
           document.getElementById("weather-uv").textContent = uv.toFixed(1);
           document.getElementById("weather-uv-status").textContent =
             `Kategori: ${getUVStatusText(uv)}`;
-
           document.getElementById("weather-rain").textContent =
             `${current.precipitation || 0} mm`;
 
@@ -1530,7 +1431,6 @@
           renderForecast(data.daily);
         } catch (err) {
           console.error(err);
-          showToast("Gagal memperbarui data cuaca real-time.", "error");
         }
       }
 
@@ -1565,21 +1465,21 @@
 
           const card = document.createElement("div");
           card.className =
-            "bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 text-center hover:border-sky-500/40 transition duration-300 flex flex-col justify-between";
+            "bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-center hover:border-sky-500/40 transition flex flex-col justify-between";
           card.innerHTML = `
-          <div>
-            <div class="text-xs font-bold text-slate-200">${dayName}</div>
-            <div class="text-[10px] text-slate-400 mb-2">${dateFormatted}</div>
-            <div class="my-2 text-3xl ${codeInfo.color}">
-              <i class="fa-solid ${codeInfo.icon}"></i>
+            <div>
+              <div class="text-[11px] font-bold text-slate-200">${dayName}</div>
+              <div class="text-[9px] text-slate-400 mb-1.5">${dateFormatted}</div>
+              <div class="my-1 text-2xl ${codeInfo.color}">
+                <i class="fa-solid ${codeInfo.icon}"></i>
+              </div>
+              <div class="text-[11px] font-extrabold text-white">${max}°C <span class="text-slate-400 font-normal">/ ${min}°C</span></div>
+              <div class="text-[10px] text-slate-300 font-medium mt-0.5 truncate">${codeInfo.title}</div>
             </div>
-            <div class="text-xs font-extrabold text-white">${max}°C <span class="text-slate-400 font-normal">/ ${min}°C</span></div>
-            <div class="text-[11px] text-slate-300 font-medium mt-1 truncate">${codeInfo.title}</div>
-          </div>
-          <div class="mt-3 pt-2 border-t border-slate-800/80 text-[10px] text-sky-300 flex items-center justify-center gap-1">
-            <i class="fa-solid fa-umbrella text-sky-400"></i> Hujan: ${rainProb}%
-          </div>
-        `;
+            <div class="mt-2 pt-1 border-t border-slate-800/80 text-[9px] text-sky-300 flex items-center justify-center gap-1">
+              <i class="fa-solid fa-umbrella text-sky-400"></i> ${rainProb}%
+            </div>
+          `;
           container.appendChild(card);
         }
       }
@@ -1599,22 +1499,20 @@
       }
 
       function getUVStatusText(uv) {
-        if (uv <= 2) return "Aman (Rendah)";
+        if (uv <= 2) return "Aman";
         if (uv <= 5) return "Sedang";
         if (uv <= 7) return "Tinggi";
-        if (uv <= 10) return "Sangat Tinggi";
         return "Ekstrem";
       }
 
-      // ==========================================
-      // INFO GEMPA BMKG
-      // ==========================================
       async function loadEarthquakeData() {
         const loading = document.getElementById("quake-loading");
         const content = document.getElementById("quake-content");
 
-        loading.style.display = "flex";
-        content.classList.add("hidden");
+        if (!state.quakeDataLoaded) {
+          loading.style.display = "flex";
+          content.classList.add("hidden");
+        }
 
         try {
           const resAuto = await fetch(
@@ -1623,6 +1521,9 @@
           if (!resAuto.ok) throw new Error();
           const dataAuto = await resAuto.json();
           const quake = dataAuto.Infogempa.gempa;
+
+          // Pemicu Deteksi Gempa Baru & Getaran Pop-up
+          checkNewEarthquakeAlert(quake);
 
           renderLatestQuake(quake);
 
@@ -1640,8 +1541,64 @@
         } catch (err) {
           console.error(err);
           loading.style.display = "none";
-          showToast("Gagal memuat data gempa BMKG.", "error");
         }
+      }
+
+      // Sistem Deteksi Gempa Baru & Pemicu Pop-up Getar
+      function checkNewEarthquakeAlert(quake) {
+        if (!quake) return;
+        const quakeId = `${quake.Tanggal}_${quake.Jam}_${quake.Coordinates}`;
+        const lastQuakeId = localStorage.getItem("last_detected_quake_id");
+
+        // Jika ID gempa dari BMKG berbeda dengan simpanan lokal (Berarti Gempa Baru Terjadi)
+        if (lastQuakeId && lastQuakeId !== quakeId) {
+          triggerQuakeAlertModal(quake);
+        }
+
+        // Simpan ID gempa terkini
+        localStorage.setItem("last_detected_quake_id", quakeId);
+      }
+
+      function triggerQuakeAlertModal(quake) {
+        document.getElementById("alert-mag").textContent =
+          `M ${quake.Magnitude}`;
+        document.getElementById("alert-time").textContent =
+          `${quake.Tanggal} - ${quake.Jam}`;
+        document.getElementById("alert-location").textContent = quake.Wilayah;
+        document.getElementById("alert-depth").textContent = quake.Kedalaman;
+
+        const modal = document.getElementById("quake-alert-modal");
+        modal.classList.remove("hidden");
+
+        // Memulai getaran berulang jika didukung perangkat
+        startContinuousVibration();
+
+        showToast(
+          `PERINGATAN: Gempa Baru Terdeteksi M ${quake.Magnitude}!`,
+          "error",
+        );
+      }
+
+      function startContinuousVibration() {
+        if ("vibrate" in navigator) {
+          // Getar 800ms, jeda 400ms berulang kali
+          navigator.vibrate([800, 400, 800, 400, 800]);
+          clearInterval(state.vibrationInterval);
+          state.vibrationInterval = setInterval(() => {
+            navigator.vibrate([800, 400, 800, 400, 800]);
+          }, 3000);
+        }
+      }
+
+      function stopQuakeAlert() {
+        const modal = document.getElementById("quake-alert-modal");
+        modal.classList.add("hidden");
+
+        // Hentikan getaran perangkat
+        if ("vibrate" in navigator) {
+          navigator.vibrate(0);
+        }
+        clearInterval(state.vibrationInterval);
       }
 
       function renderLatestQuake(gempa) {
@@ -1662,22 +1619,22 @@
 
         if (potensiText.toLowerCase().includes("tidak berpotensi tsunami")) {
           tsunamiPill.className =
-            "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 pulse-glow";
-          tsunamiPill.innerHTML = `<i class="fa-solid fa-shield-check text-emerald-400 text-sm"></i> <span>AMAN - TIDAK BERPOTENSI TSUNAMI</span>`;
+            "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 pulse-glow";
+          tsunamiPill.innerHTML = `<i class="fa-solid fa-shield-check text-emerald-400"></i> <span>AMAN - TIDAK BERPOTENSI TSUNAMI</span>`;
         } else {
           tsunamiPill.className =
-            "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-rose-600 text-white animate-bounce shadow-rose-600/50";
-          tsunamiPill.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-sm"></i> <span>WASPADA - ${potensiText.toUpperCase()}</span>`;
+            "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 bg-rose-600 text-white animate-bounce";
+          tsunamiPill.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>WASPADA - ${potensiText.toUpperCase()}</span>`;
         }
 
         const magVal = parseFloat(gempa.Magnitude);
         const magBadge = document.getElementById("quake-mag-badge");
         if (magVal >= 6.0) {
           magBadge.className =
-            "w-20 h-20 rounded-2xl bg-rose-600 text-white border border-rose-400 flex flex-col items-center justify-center shrink-0 shadow-xl";
+            "w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-rose-600 text-white border border-rose-400 flex flex-col items-center justify-center shrink-0 shadow-md";
         } else if (magVal >= 5.0) {
           magBadge.className =
-            "w-20 h-20 rounded-2xl bg-amber-500/20 text-amber-300 border border-amber-500/40 flex flex-col items-center justify-center shrink-0 shadow-xl";
+            "w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 flex flex-col items-center justify-center shrink-0 shadow-md";
         }
 
         const shakemapUrl = `https://data.bmkg.go.id/DataMKG/TEWS/${gempa.Shakemap}`;
@@ -1708,7 +1665,7 @@
 
         const infoEl = document.getElementById("quake-distance-info");
         if (infoEl) {
-          infoEl.innerHTML = `<i class="fa-solid fa-location-arrow text-sky-400"></i> Berjarak ± <strong>${Math.round(dist)} km</strong> dari lokasi Anda (${state.locationName})`;
+          infoEl.innerHTML = `<i class="fa-solid fa-location-arrow text-sky-400"></i> Berjarak ± <strong>${Math.round(dist)} km</strong> dari lokasi Anda`;
         }
       }
 
@@ -1737,18 +1694,46 @@
             bg: "bg-rose-500/20 text-rose-300 border-rose-500/40",
           };
         }
-
         if (mag >= 7.0 && depth <= 50) {
           return {
-            text: "POTENSI SIAGA",
+            text: "SIAGA",
             bg: "bg-amber-500/20 text-amber-300 border-amber-500/40",
           };
         }
-
         return {
-          text: "AMAN (Tidak Berpotensi)",
+          text: "AMAN",
           bg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
         };
+      }
+
+      function parseBmkgDate(dateStr) {
+        if (!dateStr) return null;
+        const monthMap = {
+          jan: 0,
+          feb: 1,
+          mar: 2,
+          apr: 3,
+          mei: 4,
+          jun: 5,
+          jul: 6,
+          agu: 7,
+          sep: 8,
+          okt: 9,
+          nov: 10,
+          des: 11,
+        };
+        const parts = dateStr.trim().split(/[\s\-]+/);
+        if (parts.length >= 3) {
+          const day = parseInt(parts[0], 10);
+          let month = parseInt(parts[1], 10) - 1;
+          if (isNaN(month)) {
+            const mStr = parts[1].toLowerCase().substring(0, 3);
+            month = monthMap[mStr] !== undefined ? monthMap[mStr] : 0;
+          }
+          const year = parseInt(parts[2], 10);
+          return new Date(year, month, day);
+        }
+        return null;
       }
 
       function renderQuakeHistoryTable(list) {
@@ -1756,92 +1741,101 @@
         tbody.innerHTML = "";
 
         if (!list || list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-500">Tidak ada riwayat gempa dirasakan dalam 2 hari terakhir.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-500">Tidak ada data gempa.</td></tr>`;
           return;
         }
 
-        const recentList = list.slice(0, 10);
-        document.getElementById("history-count-badge").textContent =
-          `${recentList.length} Kejadian Terakhir`;
+        const now = new Date();
+        const twoDaysAgo = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() - 1,
+        );
+        twoDaysAgo.setHours(0, 0, 0, 0);
 
-        recentList.forEach((item) => {
+        const filteredList = list.filter((item) => {
+          const qDate = parseBmkgDate(item.Tanggal);
+          if (!qDate) return true;
+          return qDate >= twoDaysAgo;
+        });
+
+        if (filteredList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-500">Tidak ada riwayat gempa dirasakan dalam 2 hari terakhir.</td></tr>`;
+          document.getElementById("history-count-badge").textContent =
+            `0 Kejadian`;
+          return;
+        }
+
+        document.getElementById("history-count-badge").textContent =
+          `${filteredList.length} Kejadian`;
+
+        filteredList.forEach((item) => {
           const tsunami = getTsunamiStatus(item);
           const tr = document.createElement("tr");
           tr.className =
             "hover:bg-slate-900/60 transition border-b border-slate-800/40";
 
           tr.innerHTML = `
-          <td class="p-3.5 whitespace-nowrap font-medium text-slate-200">
-            <div>${item.Tanggal}</div>
-            <div class="text-[10px] text-slate-400 font-mono">${item.Jam}</div>
-          </td>
-          <td class="p-3.5 whitespace-nowrap">
-            <span class="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold">
-              M ${item.Magnitude}
-            </span>
-          </td>
-          <td class="p-3.5 whitespace-nowrap text-slate-300">${item.Kedalaman}</td>
-          <td class="p-3.5 text-slate-100 font-semibold max-w-xs leading-snug">${item.Wilayah}</td>
-          <td class="p-3.5 text-amber-300 font-medium">${item.Dirasakan || "-"}</td>
-          <td class="p-3.5 whitespace-nowrap">
-            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${tsunami.bg}">
-              ${tsunami.text}
-            </span>
-          </td>
-        `;
+            <td class="p-2 whitespace-nowrap font-medium text-slate-200">
+              <div>${item.Tanggal}</div>
+              <div class="text-[9px] text-slate-400 font-mono">${item.Jam}</div>
+            </td>
+            <td class="p-2 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold">
+                M ${item.Magnitude}
+              </span>
+            </td>
+            <td class="p-2 whitespace-nowrap text-slate-300">${item.Kedalaman}</td>
+            <td class="p-2 text-slate-100 font-semibold max-w-xs leading-snug">${item.Wilayah}</td>
+            <td class="p-2 text-amber-300 font-medium">${item.Dirasakan || "-"}</td>
+            <td class="p-2 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${tsunami.bg}">
+                ${tsunami.text}
+              </span>
+            </td>
+          `;
 
           tbody.appendChild(tr);
         });
       }
 
-      // ==========================================
-      // LEAFLET MAP & ROUTE NAVIGATION ENGINE
-      // ==========================================
       function initOrResizeMap() {
         const container = document.getElementById("map-container");
         if (!container) return;
 
         if (!state.map) {
-          // Initialize Map centered on user's current GPS coords
-          state.map = L.map("map-container", {
-            zoomControl: true,
-            fadeAnimation: true,
-          }).setView([state.userCoords.lat, state.userCoords.lng], 13);
+          state.map = L.map("map-container", { zoomControl: true }).setView(
+            [state.userCoords.lat, state.userCoords.lng],
+            13,
+          );
 
-          // ESRI World Imagery Satellite Layer
           L.tileLayer(
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             {
-              attribution:
-                "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+              attribution: "Esri Satellite",
               maxZoom: 19,
             },
           ).addTo(state.map);
 
-          // ESRI Boundaries & Transportation Overlay Layer for crisp labels
           L.tileLayer(
             "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
             {
-              attribution: "Labels &copy; Esri",
+              attribution: "Esri Labels",
               maxZoom: 19,
             },
           ).addTo(state.map);
 
-          // Default marker for user position
           state.originMarker = L.marker([
             state.userCoords.lat,
             state.userCoords.lng,
           ])
             .addTo(state.map)
-            .bindPopup("<b>Posisi Anda saat ini</b><br>" + state.locationName)
+            .bindPopup("<b>Posisi Anda saat ini</b>")
             .openPopup();
         }
-
-        // Invalidate size to ensure full container rendering without grey gaps
         state.map.invalidateSize();
       }
 
-      // Input Autocomplete Search Handler
       function onSearchLocationInput(query, type) {
         clearTimeout(state.searchDebounceTimer);
         const suggestionsBox = document.getElementById(`${type}-suggestions`);
@@ -1853,15 +1847,12 @@
 
         state.searchDebounceTimer = setTimeout(async () => {
           try {
-            const searchUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=6&addressdetails=1`;
+            const searchUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=5&addressdetails=1`;
             const res = await fetch(searchUrl);
             if (!res.ok) throw new Error();
             const results = await res.json();
-
             renderSuggestions(results, type);
-          } catch (err) {
-            console.error(err);
-          }
+          } catch (err) {}
         }, 350);
       }
 
@@ -1877,20 +1868,18 @@
         results.forEach((item) => {
           const div = document.createElement("div");
           div.className =
-            "px-4 py-2.5 hover:bg-slate-800 text-xs text-slate-200 cursor-pointer border-b border-slate-800/50 flex items-center gap-2.5 transition";
+            "px-3 py-2 hover:bg-slate-800 text-xs text-slate-200 cursor-pointer border-b border-slate-800/50 flex items-center gap-2 transition";
           div.innerHTML = `
-          <i class="fa-solid fa-location-dot ${type === "origin" ? "text-emerald-400" : "text-rose-400"} shrink-0"></i>
-          <div class="truncate">
-            <div class="font-bold text-white truncate">${item.display_name.split(",")[0]}</div>
-            <div class="text-[11px] text-slate-400 truncate">${item.display_name}</div>
-          </div>
-        `;
-
+            <i class="fa-solid fa-location-dot ${type === "origin" ? "text-emerald-400" : "text-rose-400"} shrink-0"></i>
+            <div class="truncate">
+              <div class="font-bold text-white truncate">${item.display_name.split(",")[0]}</div>
+              <div class="text-[10px] text-slate-400 truncate">${item.display_name}</div>
+            </div>
+          `;
           div.onclick = function () {
             selectLocation(item, type);
             box.classList.add("hidden");
           };
-
           box.appendChild(div);
         });
 
@@ -1899,17 +1888,13 @@
 
       function selectLocation(item, type) {
         const input = document.getElementById(`route-${type}-input`);
-        const name = item.display_name.split(",")[0] + ", Situbondo";
+        const name = item.display_name.split(",")[0];
         input.value = name;
-
         const lat = parseFloat(item.lat);
         const lon = parseFloat(item.lon);
 
-        if (type === "origin") {
-          state.selectedOrigin = { name, lat, lng: lon };
-        } else {
-          state.selectedDest = { name, lat, lng: lon };
-        }
+        if (type === "origin") state.selectedOrigin = { name, lat, lng: lon };
+        else state.selectedDest = { name, lat, lng: lon };
       }
 
       function clearInput(type) {
@@ -1918,22 +1903,14 @@
         if (type === "dest") state.selectedDest = null;
       }
 
-      function setQuickPreset(villageName) {
-        const destInput = document.getElementById("route-dest-input");
-        destInput.value = villageName;
-        onSearchLocationInput(villageName, "dest");
-        showToast(`Tujuan disetel ke ${villageName}`, "info");
-      }
-
       function setCurrentLocationAsOrigin() {
         const input = document.getElementById("route-origin-input");
-        input.value = "Lokasi Saya (" + state.locationName + ")";
+        input.value = "Lokasi Saya Saat Ini";
         state.selectedOrigin = {
           name: "Lokasi Saya saat ini",
           lat: state.userCoords.lat,
           lng: state.userCoords.lng,
         };
-        showToast("Titik awal disetel ke lokasi GPS Anda.", "info");
       }
 
       async function calculateAndDrawRoute() {
@@ -1944,55 +1921,37 @@
           .getElementById("route-dest-input")
           .value.trim();
 
-        if (!originVal || !destVal) {
-          showToast(
-            "Harap isi titik awal dan titik tujuan terlebih dahulu.",
-            "warning",
-          );
-          return;
-        }
+        if (!originVal || !destVal) return;
 
         const btn = document.getElementById("btn-start-route");
         const origBtnText = btn.innerHTML;
-        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Menghitung...</span>`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i>`;
         btn.disabled = true;
 
         try {
-          // Resolve Origin coordinates if not selected from suggestion
-          if (!state.selectedOrigin || !state.selectedOrigin.lat) {
+          if (!state.selectedOrigin || !state.selectedOrigin.lat)
             state.selectedOrigin = await geocodeText(originVal);
-          }
-
-          // Resolve Destination coordinates if not selected from suggestion
-          if (!state.selectedDest || !state.selectedDest.lat) {
+          if (!state.selectedDest || !state.selectedDest.lat)
             state.selectedDest = await geocodeText(destVal);
-          }
 
-          if (!state.selectedOrigin || !state.selectedDest) {
-            throw new Error("Lokasi tidak ditemukan. Harap periksa nama desa.");
-          }
+          if (!state.selectedOrigin || !state.selectedDest)
+            throw new Error("Lokasi tidak ditemukan.");
 
           const o = state.selectedOrigin;
           const d = state.selectedDest;
 
-          // Fetch route geometry from OSRM driving API
           const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${o.lng},${o.lat};${d.lng},${d.lat}?overview=full&geometries=geojson`;
           const routeRes = await fetch(osrmUrl);
-          if (!routeRes.ok)
-            throw new Error("Gagal mengambil jalur rute dari server OSRM.");
+          if (!routeRes.ok) throw new Error();
           const routeData = await routeRes.json();
 
-          if (!routeData.routes || routeData.routes.length === 0) {
-            throw new Error(
-              "Rute tidak dapat ditemukan antara dua titik tersebut.",
-            );
-          }
+          if (!routeData.routes || routeData.routes.length === 0)
+            throw new Error("Rute tidak ditemukan.");
 
           const route = routeData.routes[0];
           const distKm = (route.distance / 1000).toFixed(1);
           const durationMin = Math.round(route.duration / 60);
 
-          // Render summary box
           document
             .getElementById("route-summary-card")
             .classList.remove("hidden");
@@ -2001,51 +1960,34 @@
           document.getElementById("route-distance-val").textContent =
             `${distKm} km`;
           document.getElementById("route-duration-val").textContent =
-            `${durationMin} menit`;
+            `${durationMin} mnt`;
 
-          // Update Map Layers
           initOrResizeMap();
 
-          // Clear existing markers & route polyline
           if (state.originMarker) state.map.removeLayer(state.originMarker);
           if (state.destMarker) state.map.removeLayer(state.destMarker);
           if (state.routePolyline) state.map.removeLayer(state.routePolyline);
 
-          // Draw new route polyline
           const latLngs = route.geometry.coordinates.map((c) => [c[1], c[0]]);
           state.routePolyline = L.polyline(latLngs, {
             color: "#10b981",
-            weight: 6,
+            weight: 5,
             opacity: 0.9,
-            lineJoin: "round",
           }).addTo(state.map);
 
-          // Place Origin Marker
           state.originMarker = L.marker([o.lat, o.lng])
             .addTo(state.map)
-            .bindPopup(`<b>Titik Awal (Asal)</b><br>${o.name}`)
+            .bindPopup(`<b>Asal:</b> ${o.name}`)
             .openPopup();
-
-          // Place Dest Marker
           state.destMarker = L.marker([d.lat, d.lng])
             .addTo(state.map)
-            .bindPopup(`<b>Titik Akhir (Tujuan)</b><br>${d.name}`);
+            .bindPopup(`<b>Tujuan:</b> ${d.name}`);
 
-          // Fit map bounds to view whole route
           state.map.fitBounds(state.routePolyline.getBounds(), {
-            padding: [40, 40],
+            padding: [30, 30],
           });
-
-          showToast(
-            `Rute berhasil ditemukan! Jarak: ${distKm} km (${durationMin} mnt)`,
-            "info",
-          );
         } catch (err) {
           console.error(err);
-          showToast(
-            err.message || "Terjadi kesalahan saat membuat rute.",
-            "error",
-          );
         } finally {
           btn.innerHTML = origBtnText;
           btn.disabled = false;
@@ -2059,7 +2001,7 @@
         const data = await res.json();
         if (data && data.length > 0) {
           return {
-            name: data[0].display_name.split(",")[0] + ", Situbondo",
+            name: data[0].display_name.split(",")[0],
             lat: parseFloat(data[0].lat),
             lng: parseFloat(data[0].lon),
           };
@@ -2067,46 +2009,19 @@
         return null;
       }
 
-      // ==========================================
-      // NOTIFICATION TOAST HELPER
-      // ==========================================
       function showToast(message, type = "info") {
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
 
-        let icon = "fa-circle-info text-sky-400";
-        let border = "border-sky-500/30";
-
-        if (type === "error") {
-          icon = "fa-circle-xmark text-rose-400";
-          border = "border-rose-500/30";
-        } else if (type === "warning") {
-          icon = "fa-triangle-exclamation text-amber-400";
-          border = "border-amber-500/30";
-        }
-
-        toast.className = `pointer-events-auto bg-slate-900/95 backdrop-blur-md text-slate-100 text-xs px-4 py-3 rounded-xl border ${border} shadow-2xl flex items-center justify-between gap-3 transition-all duration-300 transform translate-y-2 opacity-0`;
-
-        toast.innerHTML = `
-        <div class="flex items-center gap-2.5">
-          <i class="fa-solid ${icon} text-base"></i>
-          <span>${message}</span>
-        </div>
-        <button onclick="this.parentElement.remove()" class="text-slate-500 hover:text-white">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      `;
+        toast.className = `pointer-events-auto bg-slate-900/95 backdrop-blur text-slate-100 text-xs px-3 py-2 rounded-lg border border-slate-700 shadow-lg flex items-center justify-between gap-2 transition-all duration-300 opacity-0`;
+        toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>`;
 
         container.appendChild(toast);
-
-        setTimeout(() => {
-          toast.classList.remove("translate-y-2", "opacity-0");
-        }, 50);
-
+        setTimeout(() => toast.classList.remove("opacity-0"), 50);
         setTimeout(() => {
           toast.classList.add("opacity-0");
           setTimeout(() => toast.remove(), 300);
-        }, 4000);
+        }, 3500);
       }
     </script>
   </body>
